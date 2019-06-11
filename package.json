@@ -16,7 +16,9 @@
     "directories": {
         "test": "src/tests/"
     },
-    "dependencies": {},
+    "dependencies": {
+        "archiver": "^3.0.0"
+    },
     "devDependencies": {
         "@semantic-release/git": "^7.0.8",
         "@types/mocha": "^5.2.7",
