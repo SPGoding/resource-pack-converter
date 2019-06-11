@@ -1,0 +1,18 @@
+{
+    "plugins": [
+        "semantic-release-gitmoji",
+        "@semantic-release/github",
+        "@semantic-release/npm",
+        [
+            "@semantic-release/git",
+            {
+                "assets": [
+                    "lib",
+                    "package.json",
+                    "package-lock.json"
+                ],
+                "message": ":bookmark: v${nextRelease.version}\n\n[skip ci]\nhttps://github.com/SPGoding/resource-pack-converter/releases/tag/${nextRelease.gitTag}"
+            }
+        ]
+    ]
+}

@@ -1,0 +1,65 @@
+# ~/.circleci/config.yml
+version: 2
+jobs:
+    test:
+        docker:
+            - image: circleci/node:8
+        steps:
+            - checkout
+            # Restore dependencies from cache
+            - restore_cache:
+                    keys:
+                        - v1-dependencies-{{ checksum "package.json" }}
+                        - v1-dependencies-
+            # Install project dependencies
+            - run: 
+                    name: Install dependencies
+                    command: npm i
+            # Cache local dependencies if they don't exist
+            - save_cache:
+                    key: v1-dependencies-{{ checksum "package.json" }}
+                    paths:
+                        - node_modules
+            - run:
+                    name: Run tests
+                    command: npm test
+    release:
+        docker:
+            - image: circleci/node:8
+        steps:
+            - checkout
+            # Restore dependencies from cache
+            - restore_cache:
+                    keys:
+                        - v1-dependencies-{{ checksum "package.json" }}
+                        - v1-dependencies-
+            # Install project dependencies
+            - run: 
+                    name: Install dependencies
+                    command: npm i
+            # Cache local dependencies if they don't exist
+            - save_cache:
+                    key: v1-dependencies-{{ checksum "package.json" }}
+                    paths:
+                        - node_modules
+            - run:
+                    name: Lint
+                    command: npm run lint-fix
+            - run:
+                    name: Build
+                    command: npm run build
+            - run:
+                    name: Release
+                    command: npm run release
+
+workflows:
+    version: 2
+    test_and_release:
+        jobs:
+            - test
+            - release:
+                    requires:
+                        - test
+                    filters:
+                        branches:
+                            only: master
