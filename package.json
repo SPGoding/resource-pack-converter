@@ -7,20 +7,23 @@
     "scripts": {
         "build": "tsc",
         "commit": "gitmoji -c",
-        "lint": "tslint tests/*.ts -t verbose",
-        "lint-fix": "tslint --fix tests/*.ts -t verbose",
+        "lint": "tslint --project tsconfig.json --config tslint.json src/**/*.ts",
+        "lint-fix": "tslint --project tsconfig.json --config tslint.json --fix src/**/*.ts",
         "release": "semantic-release",
-        "test": "mocha --require espower-typescript/guess \"./src/test/**/*.ts\"",
+        "test": "mocha --require espower-typescript/guess --reporter dot \"./src/test/**/*.ts\"",
         "watch": "tsc -w"
     },
     "directories": {
         "test": "src/tests/"
     },
     "dependencies": {
-        "archiver": "^3.0.0"
+        "archiver": "^3.0.0",
+        "fs-extra": "^8.0.1"
     },
     "devDependencies": {
         "@semantic-release/git": "^7.0.8",
+        "@types/archiver": "^3.0.0",
+        "@types/fs-extra": "^7.0.0",
         "@types/mocha": "^5.2.7",
         "@types/power-assert": "^1.5.0",
         "espower-typescript": "^8.1.4",
