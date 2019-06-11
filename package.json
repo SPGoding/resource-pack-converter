@@ -14,7 +14,7 @@
         "watch": "tsc -w"
     },
     "directories": {
-        "test": "src/tests/"
+        "test": "src/test/"
     },
     "dependencies": {
         "fs-extra": "^8.0.1",
