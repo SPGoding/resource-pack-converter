@@ -11,6 +11,7 @@
         "lint-fix": "tslint --project tsconfig.json --config tslint.json --fix src/**/*.ts",
         "release": "semantic-release",
         "test": "mocha --require espower-typescript/guess --reporter dot \"./src/test/**/*.ts\"",
+        "uti:analyzer": "node uti/analyzer",
         "watch": "tsc -w"
     },
     "directories": {
