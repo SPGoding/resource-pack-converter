@@ -1,12 +1,14 @@
-export interface Adapter {
-    constructor(params: object): void
-    
+import { File, Logger } from '../utils'
+import { MoveAdapter } from './move-adapter'
+import { WarnAdapter } from './warn-adapter'
+
+export default interface Adapter {
+    constructor: Function
+
     /**
-     * The identity of the adapter.
+     * Adapts.
      */
-    id: string
-    /**
-     * Adapt
-     */
-    execute(input: File): File
+    execute(input: File, logger: Logger): Promise<File>
 }
+
+export const Adapters: any[] = [MoveAdapter, WarnAdapter]

@@ -1,0 +1,10 @@
+{
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/src/conversions/*.json"
+            ],
+            "url": "/uti/conversion.schema.json"
+        }
+    ]
+}

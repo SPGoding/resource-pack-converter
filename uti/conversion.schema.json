@@ -1,0 +1,106 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "definitions": {
+        "adapterID": {
+            "enum": [
+                "RenameAdapter",
+                "WarnAdapter"
+            ]
+        },
+        "version": {
+            "enum": [
+                "JE1.6",
+                "JE1.7",
+                "JE1.8",
+                "JE1.9",
+                "JE1.10",
+                "JE1.11",
+                "JE1.12",
+                "JE1.13",
+                "JE1.14"
+            ]
+        }
+    },
+    "properties": {
+        "from": {
+            "$ref": "#/definitions/version",
+            "description": "Specifies the game version which the conversion starts from."
+        },
+        "to": {
+            "$ref": "#/definitions/version",
+            "description": "Specifies the game version which the conversion ends with."
+        },
+        "adapters": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "$ref": "#/definitions/adapterID",
+                        "description": "The identity of adapter."
+                    },
+                    "params": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Stores all parameters used to initialize the adapter."
+                    }
+                },
+                "oneOf": [
+                    {
+                        "properties": {
+                            "id": {
+                                "enum": [
+                                    "RenameAdapter"
+                                ]
+                            },
+                            "params": {
+                                "properties": {
+                                    "operations": {
+                                        "items": {
+                                            "properties": {
+                                                "find": {},
+                                                "rename": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "id": {
+                                "enum": [
+                                    "WarnAdapter"
+                                ]
+                            },
+                            "params": {
+                                "properties": {
+                                    "warnings": {
+                                        "items": {
+                                            "properties": {
+                                                "find": {},
+                                                "send": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "required": [
+                    "id"
+                ]
+            }
+        }
+    },
+    "required": [
+        "from",
+        "to",
+        "adapters"
+    ]
+}

@@ -78,6 +78,7 @@ Adapters may be referenced and initialized by *conversions*.
 Here are all built-in adapters.
 
 - [RenameAdapter](#RenameAdapter)
+- [WarnAdapter](#WarnAdapter)
 
 #### RenameAdapter
 
@@ -86,8 +87,8 @@ Rename the input file according to `operations`.
 - `operations`: (Required) Array. Stores all renaming operations.
     - An object.
         - `find`: (Required) String. Specifies the files which this operation should handle. Should be an 
-        Regular Expression.
-        - `rename`: (Required) String. Specifies the new file name.
+        Regular Expression. File extensions like `.png` and `.png.mcmeta` should be omitted.
+        - `moveTo`: (Required) String. Specifies the new path.
 
 e.g.
 
@@ -95,8 +96,33 @@ e.g.
 {
     "operations": [
         {
-            "find": "assets/minecraft/textures/block/foo\\.png(\\.mcmeta)?", 
-            "rename": "bar\\.png$1"
+            "find": "^assets/minecraft/textures/blocks/(\\w+)$", 
+            "moveTo": "assets/minecraft/textures/block/$1"
+        }
+    ]
+}
+```
+
+#### WarnAdapter
+
+Send wannings if there are specific files.
+
+- `warnings`: (Required) Array. Stores all warnings.
+    - An object.
+        - `find`: (Required) String. The warnings will be sent if specific files exist. Should be an 
+        Regular Expression.
+        - `send`: (Required) Array of strings.
+
+e.g.
+
+```JSON
+{
+    "warnings": [
+        {
+            "find": "assets/minecraft/lang/\\w+.json", 
+            "send": [
+                "You may want to update texts in $0."
+            ]
         }
     ]
 }
@@ -110,7 +136,7 @@ A *Conversion* contains a set of adapters. It's JSON formatted and stored in `./
     - `adapters`: (Required) Array. Initialize adapters here.
         - An object. Represents an adapter.
             - `id`: (Required) String. The identity of adapter.
-            - `params`: (Optional) Object. Stores all parameters used to initialize the adapter.
+            - `params`: (Required) Object. Stores all parameters used to initialize the adapter.
                 - *`key`*: Value.
     - `from`: (Required) String. Specifies the game version which the conversion starts from.
     - `to`: (Required) String. Specifies the game version which the conversion ends with.
