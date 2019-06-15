@@ -8,7 +8,8 @@
 
 :construction: Still work in progress...
 
-The RPC (Resource Pack Converter) is a npm package which can convert a Minecraft: Java Edition resource pack from any version to another version.
+The RPC (Resource Pack Converter) is a npm package which can convert a Minecraft: Java Edition resource pack from 
+any version to another version.
 
 - [Resource Pack Converter](#Resource-Pack-Converter)
     - [Usage](#Usage)
@@ -48,17 +49,29 @@ IT'S NOT AVALIABLE ACTUALLY.
 - `src`: Source code written in TypeScript.
 - `lib`: Output JavaScript files.
 - `uti`: Some useful tools while coding.
-    - `analyzer.js`: Generates a *conversion* of `./uti/input/A/` into `./uti/input/B/`.
+    - `analyzer.js`: An resource pack analyzer which can find the differences (e.g. file names) between 
+    two resource packs (only support folders) and generate conversion files. Use
+    ```Bash
+    npm run uti:analyzer ${dirFrom} ${dirTo} ${output}
+    ```
+    to analyze differences between `${dirFrom}` and `${dirTo}`. The result will be stored in `uti/analyzer/${output}`.
+    e.g. 
+    ```Bash
+    npm run uti:analyzer uti/input/1.6/ uti/input/1.7/ 1.6-1.7.json
+    ```
 
 ## How does it Work
 
 ### Overview
 
-The RPC will duplicate the input resource pack at first, and then execute all *adapters* orderly for each file in the duplicated resource pack according to specific *conversion*.
+The RPC will duplicate the input resource pack at first, and then execute all *adapters* orderly for each file 
+in the duplicated resource pack according to specific *conversion*.
 
 ### Adapters
 
-*Adapters* carry out operations for specific files in the resource pack, e.g. renaming files, scaling images, changing text contents, etc. All adapters are written in TypeScript and should implement the `Adapter` interface. They are located in `./src/adapters/`.
+*Adapters* carry out operations for specific files in the resource pack, e.g. renaming files, scaling images, 
+changing text contents, etc. All adapters are written in TypeScript and should implement the `Adapter` interface. 
+They are located in `./src/adapters/`.
 
 Adapters may be referenced and initialized by *conversions*.
 
@@ -72,7 +85,8 @@ Rename the input file according to `operations`.
 
 - `operations`: (Required) Array. Stores all renaming operations.
     - An object.
-        - `find`: (Required) String. Specifies the files which this operation should handle. Should be an Regular Expression.
+        - `find`: (Required) String. Specifies the files which this operation should handle. Should be an 
+        Regular Expression.
         - `rename`: (Required) String. Specifies the new file name.
 
 e.g.
@@ -103,7 +117,8 @@ A *Conversion* contains a set of adapters. It's JSON formatted and stored in `./
 
 ## Contributing
 
-I'm thrilled to hear that you'd like to contribute to this project. It's no doubt that the converter will be better with your help!
+I'm thrilled to hear that you'd like to contribute to this project. It's no doubt that the converter will be better 
+with your help!
 
 1.  Fork this this repo and clone it to your local.
 
