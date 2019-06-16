@@ -22,8 +22,8 @@ describe('utils.ts Tests', () => {
     })
     describe('getRelativePath() Tests', () => {
         it('Should handle the relative path of relative paths', () => {
-            const root = 'resourcepacks\\foo'
-            const dir = 'resourcepacks\\foo\\assets\\pack.mcmeta'
+            const root = 'resourcepacks/foo'
+            const dir = 'resourcepacks/foo/assets/pack.mcmeta'
 
             const actual = getRelativePath(root, dir)
 
