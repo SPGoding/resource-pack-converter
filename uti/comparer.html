@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Comparer</title>
+    <style>
+        #left,
+        #right {
+            display: inline-block;
+            *display: inline;
+            zoom: 1;
+            vertical-align: top;
+            font-size: 12px;
+            width: 49%;
+        }
+
+        pre {
+            background: #F8F8FF;
+            border: black dashed 1px;
+            padding: 6px
+        }
+
+        button {
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: center;">
+        <input type="text" placeholder="inDir" id="inDir" size="60"></input>
+        <input type="text" placeholder="outDir" id="outDir" size="60"></input><br />
+        <textarea placeholder="Write a JSON string array here." id="array" cols="128" rows="8"></textarea><br />
+        <button type="button" id="formatChange" style="background-color: #008CBA;">Format Change</button>
+        <button type="button" id="slightChange" style="background-color: #555555;">Slight Change</button><br />
+    </div>
+    <div id="left" style="text-align: center;">
+        <h1>FROM</h1>
+        <pre id="leftCode">Binary file.</pre>
+        <img id="leftImg" height="256px" width="256px" />
+    </div>
+    <div id="right" style="text-align: center;">
+        <h1>TO</h1>
+        <pre id="rightCode">Binary file.</pre>
+        <img id="rightImg" height="256px" width="256px"/>
+    </div>
+    <script>
+        "use strict"
+        const formatChange = document.getElementById('formatChange')
+        const slightChange = document.getElementById('slightChange')
+        const array = document.getElementById('array')
+        const inDir = document.getElementById('inDir')
+        const outDir = document.getElementById('outDir')
+        const leftImg = document.getElementById('leftImg')
+        const leftCode = document.getElementById('leftCode')
+        const rightImg = document.getElementById('rightImg')
+        const rightCode = document.getElementById('rightCode')
+        let index = 0
+
+        inDir.value = window.localStorage.getItem('inDir')
+        outDir.value = window.localStorage.getItem('outDir')
+
+        /**
+         * @params file The file path.
+         * @params code The <pre> element.
+         */
+        function readTextFile(file, code) {
+            const rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        const allText = rawFile.responseText
+                        code.innerHTML = allText
+                    }
+                }
+            }
+            rawFile.send(null)
+        }
+
+        function pathJoin(before, after) {
+            before = before.replace(/\\/g, '/')
+            after = after.replace(/\\/g, '/')
+            if (before.slice(-1) === '/') {
+                before = before.slice(0, -1)
+            }
+            return `file:///${before}/${after}`
+        }
+
+        function button() {
+            window.localStorage.setItem('inDir', inDir.value)
+            window.localStorage.setItem('outDir', outDir.value)
+            const json = JSON.parse(array.value)
+            array.value = JSON.stringify(json, undefined, 4)
+            if (index < json.length - 1) {
+                index += 1
+            } else {
+                alert('End!')
+                index = 0
+            }
+            const relativeDir = json[index]
+            leftCode.innerHTML = 'Binary file.'
+            rightCode.innerHTML = 'Binary file.'
+            leftImg.src = ''
+            rightImg.src = ''
+            if (relativeDir) {
+                leftImg.src = pathJoin(inDir.value, relativeDir)
+                rightImg.src = pathJoin(outDir.value, relativeDir)
+                // readTextFile(pathJoin(inDir.value, relativeDir), leftCode)
+                // readTextFile(pathJoin(outDir.value, relativeDir), rightCode)
+            }
+        }
+
+        formatChange.onclick = () => {
+            button()
+        }
+
+        slightChange.onclick = () => {
+            button()
+            const json = JSON.parse(array.value)
+            index -= 1
+            json.splice(index, 1)
+            array.value = JSON.stringify(json, undefined, 4)
+        }
+    </script>
+</body>
+
+</html>

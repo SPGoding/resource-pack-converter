@@ -1,8 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.JE16ToJE17 = {
-    from: 'JE1.6',
-    to: 'JE1.7',
+import { Conversion } from './conversion'
+
+export const JE17ToJE18: Conversion = {
+    from: 'JE1.7',
+    to: 'JE1.8',
     adapters: [
         {
             id: 'WarnAdapter',
@@ -17,6 +17,7 @@ exports.JE16ToJE17 = {
                     {
                         find: '^pack.mcmeta$',
                         send: [
+                            'You may want to add a ton of blockstates and models.',
                             'You may want to add following files:',
                             '{outDir}/assets/minecraft/textures/blocks/dirt_podzol_side.png',
                             '{outDir}/assets/minecraft/textures/blocks/dirt_podzol_top.png',
@@ -116,6 +117,6 @@ exports.JE16ToJE17 = {
             }
         }
     ]
-};
-exports.default = exports.JE16ToJE17;
-//# sourceMappingURL=je16-je17.js.map
+}
+
+export default JE17ToJE18
