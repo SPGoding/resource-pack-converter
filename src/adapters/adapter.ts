@@ -1,11 +1,12 @@
 import { File, Logger } from '../utils'
 import { PathAdapter, PathAdapterParams } from './path-adapter'
 import { WarnAdapter, WarnAdapterParams } from './warn-adapter'
+import { SkinAdapter, SkinAdapterParams } from './skin-adapter'
 
 /**
  * All avaliable adapter classes.
  */
-export const ADAPTERS: any[] = [PathAdapter, WarnAdapter]
+export const ADAPTERS: any[] = [PathAdapter, SkinAdapter, WarnAdapter]
 
 /**
  * Represents an adapter. Adapters carry out operations for single file in the resource pack, 
@@ -17,7 +18,7 @@ export default interface Adapter {
     /**
      * Adapts.
      */
-    execute(input: File, logger: Logger): File
+    execute(input: File, logger: Logger): Promise<File>
 }
 
 /**
@@ -31,5 +32,5 @@ export interface AdapterInitialization {
     /**
      * Stores all parameters used to initialize the adapter.
      */
-    params: PathAdapterParams | WarnAdapterParams
+    params: PathAdapterParams | SkinAdapterParams | WarnAdapterParams 
 }

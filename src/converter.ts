@@ -80,11 +80,11 @@ function convertRecursively(root: string, inDir: string, options: { outDir: stri
     }
 }
 
-function convertSingleFile(file: File, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
+async function convertSingleFile(file: File, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
     const { outDir, adapters, logger } = options
     try {
         for (const adapter of adapters) {
-            file = adapter.execute(file, logger)
+            file = await adapter.execute(file, logger)
         }
 
         const filePath = path.join(outDir, path.dirname(file.path))

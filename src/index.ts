@@ -1,5 +1,6 @@
 /**
  * Usage.
+ * e.g. `node lib --in .\uti\input\1.6\ --out .\uti\output\1.7\ -f JE1.6 -t JE1.7 --force=true`
  */
 const USAGE = 'node lib --in ${inDir} --out ${outDir} --from ${fromVersion} --to ${toVersion} [--force=true]'
 

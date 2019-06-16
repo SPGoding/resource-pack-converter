@@ -9,7 +9,7 @@ export interface PathAdapterParams {
         /**
          * Specifies the files which this operation should handle. Should be an Regular Expression.
          */
-        find: string,
+        find: string | string[],
         /**
          * Specifies the new path.
          */
@@ -20,15 +20,20 @@ export interface PathAdapterParams {
 export class PathAdapter implements Adapter {
     constructor(private readonly params: PathAdapterParams) { }
 
-    execute(input: File, logger: Logger): File {
+    async execute(input: File, logger: Logger): Promise<File> {
         for (const op of this.params.operations) {
-            const regex = new RegExp(op.find)
-            const path = replaceWithRegExp(op.moveTo, input.path, regex)
-            if (path) {
-                logger.info(`Moved '{inDir}/${input.path}' to '{outDir}/${path}'.`)
-                return {
-                    content: input.content,
-                    path
+            if (typeof op.find === 'string') {
+                op.find = [op.find]
+            }
+            for (const i of op.find) {
+                const regex = new RegExp(i)
+                const path = replaceWithRegExp(op.moveTo, input.path, regex)
+                if (path) {
+                    logger.info(`Moved '{inDir}/${input.path}' to '{outDir}/${path}'.`)
+                    return {
+                        content: input.content,
+                        path
+                    }
                 }
             }
         }

@@ -1,6 +1,7 @@
 import { File, Logger } from '../utils';
 import { PathAdapterParams } from './path-adapter';
 import { WarnAdapterParams } from './warn-adapter';
+import { SkinAdapterParams } from './skin-adapter';
 /**
  * All avaliable adapter classes.
  */
@@ -27,5 +28,5 @@ export interface AdapterInitialization {
     /**
      * Stores all parameters used to initialize the adapter.
      */
-    params: PathAdapterParams | WarnAdapterParams;
+    params: PathAdapterParams | SkinAdapterParams | WarnAdapterParams;
 }

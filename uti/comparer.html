@@ -38,16 +38,15 @@
         <textarea placeholder="Write a JSON string array here." id="array" cols="128" rows="8"></textarea><br />
         <button type="button" id="formatChange" style="background-color: #008CBA;">Format Change</button>
         <button type="button" id="slightChange" style="background-color: #555555;">Slight Change</button><br />
+        <pre id="code">...</pre>
     </div>
     <div id="left" style="text-align: center;">
         <h1>FROM</h1>
-        <pre id="leftCode">Binary file.</pre>
-        <img id="leftImg" height="256px" width="256px" />
+        <img id="leftImg" height="50%" width="50%" />
     </div>
     <div id="right" style="text-align: center;">
         <h1>TO</h1>
-        <pre id="rightCode">Binary file.</pre>
-        <img id="rightImg" height="256px" width="256px"/>
+        <img id="rightImg" height="50%" width="50%"/>
     </div>
     <script>
         "use strict"
@@ -56,10 +55,9 @@
         const array = document.getElementById('array')
         const inDir = document.getElementById('inDir')
         const outDir = document.getElementById('outDir')
+        const code = document.getElementById('code')
         const leftImg = document.getElementById('leftImg')
-        const leftCode = document.getElementById('leftCode')
         const rightImg = document.getElementById('rightImg')
-        const rightCode = document.getElementById('rightCode')
         let index = 0
 
         inDir.value = window.localStorage.getItem('inDir')
@@ -104,10 +102,9 @@
                 index = 0
             }
             const relativeDir = json[index]
-            leftCode.innerHTML = 'Binary file.'
-            rightCode.innerHTML = 'Binary file.'
             leftImg.src = ''
             rightImg.src = ''
+            code.innerHTML = relativeDir
             if (relativeDir) {
                 leftImg.src = pathJoin(inDir.value, relativeDir)
                 rightImg.src = pathJoin(outDir.value, relativeDir)

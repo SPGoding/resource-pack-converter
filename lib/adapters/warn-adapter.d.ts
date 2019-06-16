@@ -9,7 +9,7 @@ export interface WarnAdapterParams {
          * The warnings will be sent if specific files exist. Should be an
          * Regular Expression.
          */
-        find: string;
+        find: string | string[];
         /**
          * Array of strings.
          */

@@ -8,7 +8,7 @@ export interface PathAdapterParams {
         /**
          * Specifies the files which this operation should handle. Should be an Regular Expression.
          */
-        find: string;
+        find: string | string[];
         /**
          * Specifies the new path.
          */
