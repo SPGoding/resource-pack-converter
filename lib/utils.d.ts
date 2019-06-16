@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * Reprensets a file in the resource pack.
  */
@@ -27,7 +28,7 @@ export declare class Logger {
     private readonly _logs;
     private _indent;
     private _log;
-    indent(delta?: number): void;
+    indent(delta?: number): this;
     /**
      * Log an information.
      * @param msg The message.

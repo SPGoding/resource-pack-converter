@@ -1,6 +1,6 @@
 /**
  * Usage.
- * e.g. `node lib --in .\uti\input\1.6\ --out .\uti\output\1.7\ -f JE1.6 -t JE1.7 --force=true`
+ * e.g. `node lib --in .\uti\input\1.7\ --out .\uti\output\1.8\ -f JE1.7 -t JE1.8 --force=true`
  */
 const USAGE = 'node lib --in ${inDir} --out ${outDir} --from ${fromVersion} --to ${toVersion} [--force=true]'
 
@@ -34,8 +34,9 @@ try {
         fs.removeSync(argv.out)
         fs.mkdirSync(argv.out, { recursive: true })
         // Conversion.
-        const logger = convert(argv.in, { conversion, outDir: argv.out })
-        fs.writeFile(path.join(argv.out, './latest.log'), logger.toString())
+        convert(argv.in, { conversion, outDir: argv.out }).then(logger => {
+            fs.writeFile(path.join(argv.out, './latest.log'), logger.toString())
+        })
     } else {
         throw `Usage: '${USAGE}'. Cannot find ${argv.in ? '' : 'in'}:${argv.out ? '' : 'out'}:${argv.from ? '' : 'from'}:${argv.to ? '' : 'to'}:${argv.force ? '' : 'force'}`
     }

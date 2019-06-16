@@ -18,5 +18,5 @@ export interface ConverterOptions {
  * @param src The path of input resource pack folder.
  * @param options The options.
  */
-export declare function convert(src: string, options: ConverterOptions): Logger;
+export declare function convert(src: string, options: ConverterOptions): Promise<Logger>;
 export default convert;

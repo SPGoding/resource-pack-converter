@@ -15,7 +15,7 @@ export default interface Adapter {
     /**
      * Adapts.
      */
-    execute(input: File, logger: Logger): File;
+    execute(input: File, logger: Logger): Promise<File>;
 }
 /**
  * An initialization of adapter.

@@ -19,5 +19,5 @@ export interface WarnAdapterParams {
 export declare class WarnAdapter implements Adapter {
     private readonly params;
     constructor(params: WarnAdapterParams);
-    execute(input: File, logger: Logger): File;
+    execute(input: File, logger: Logger): Promise<File>;
 }

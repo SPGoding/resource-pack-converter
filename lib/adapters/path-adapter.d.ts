@@ -18,5 +18,5 @@ export interface PathAdapterParams {
 export declare class PathAdapter implements Adapter {
     private readonly params;
     constructor(params: PathAdapterParams);
-    execute(input: File, logger: Logger): File;
+    execute(input: File, logger: Logger): Promise<File>;
 }

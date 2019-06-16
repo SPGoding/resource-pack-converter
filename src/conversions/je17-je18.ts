@@ -164,6 +164,12 @@ export const JE17ToJE18: Conversion = {
                     }
                 ]
             }
+        },
+        {
+            id: 'SkinAdapter',
+            params: {
+                find: '^assets/minecraft/textures/entity/steve\\.png$'
+            }
         }
     ]
 }

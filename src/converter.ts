@@ -23,7 +23,7 @@ export interface ConverterOptions {
  * @param src The path of input resource pack folder.
  * @param options The options.
  */
-export function convert(src: string, options: ConverterOptions): Logger {
+export async function convert(src: string, options: ConverterOptions) {
     const inDir = path.resolve(src)
     const outDir = path.resolve(options.outDir)
     const logger = new Logger()
@@ -45,36 +45,36 @@ export function convert(src: string, options: ConverterOptions): Logger {
         })
         logger.info(`Initialized ${adapters.length} adapter(s).`).indent(-1)
 
-        convertRecursively(inDir, inDir, { outDir, adapters, logger })
+        await convertRecursively(inDir, inDir, { outDir, adapters, logger })
+        logger.info('Finished conversion.')
     } catch (ex) {
         logger.error(ex)
     } finally {
-        logger.info('Finished conversion.')
         return logger
     }
 }
 
-function convertRecursively(root: string, inDir: string, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
-    const { outDir, logger } = options
+async function convertRecursively(root: string, inDir: string, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
+    const { logger } = options
     try {
-        const directories = fs.readdirSync(inDir)
+        const directories = await fs.readdir(inDir)
 
-        directories.forEach(v => {
-            const absInPath = path.join(inDir, v)
+        for (const i of directories) {
+            const absInPath = path.join(inDir, i)
             const relPath = getRelativePath(root, absInPath)
 
-            if ((fs.statSync(absInPath)).isDirectory()) {
+            if ((await fs.stat(absInPath)).isDirectory()) {
                 logger.info(`Handling directory '{inDir}/${relPath}'...`).indent()
-                convertRecursively(root, absInPath, options)
+                await convertRecursively(root, absInPath, options)
                 logger.indent(-1)
             } else {
                 logger.info(`Handling file '{inDir}/${relPath}'...`).indent()
-                const content = fs.readFileSync(absInPath)
+                const content = await fs.readFile(absInPath)
                 const file = { content, path: relPath }
-                convertSingleFile(file, options)
+                await convertSingleFile(file, options)
                 logger.indent(-1)
             }
-        })
+        }
     } catch (ex) {
         logger.error(ex)
     }
@@ -91,9 +91,9 @@ async function convertSingleFile(file: File, options: { outDir: string, adapters
         if (!fs.existsSync(filePath)) {
             fs.mkdirSync(filePath, { recursive: true })
         }
-        fs.writeFileSync(path.join(outDir, file.path), file.content)
-
+        await fs.writeFile(path.join(outDir, file.path), file.content)
         logger.info(`Created file '{outDir}/${file.path}'.`)
+
     } catch (ex) {
         logger.error(ex)
     }

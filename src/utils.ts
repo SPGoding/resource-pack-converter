@@ -50,7 +50,7 @@ export class Logger {
         const fixThreeDigits = (number: number) => number < 10 ? `00${number}` : number < 100 ? `0${number}` : number.toString()
         const time = `${fixTwoDigits(date.getHours())}:${fixTwoDigits(date.getMinutes())}:${fixTwoDigits(date.getSeconds())}:${fixThreeDigits(date.getMilliseconds())}`
         msg.forEach(v => {
-            const m = `[${time}] [${type}] ${'  '.repeat(this._indent)}${v}`
+            const m = `[${time}] [MAIN] [${type}] ${'  '.repeat(this._indent)}${v}`
             this._logs.push(m)
         })
         return this
@@ -58,6 +58,7 @@ export class Logger {
 
     public indent(delta = 1) {
         this._indent += delta
+        return this
     }
 
     /**
