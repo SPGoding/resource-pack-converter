@@ -26,11 +26,12 @@ export interface ConverterOptions {
 export function convert(src: string, options: ConverterOptions): Logger {
     const inDir = path.resolve(src)
     const outDir = path.resolve(options.outDir)
-    const logger = new Logger(path.join(outDir, './latest.log'))
+    const logger = new Logger()
     const conversion = options.conversion
 
+    logger.info('Resouce Pack Converter made by @SPGoding <SPGoding@outlook.com>.')
     logger.info('Starting conversion...')
-    logger.prvc(`{inDir} = '${inDir}'`, `{outDir} = '${outDir}'`)
+    logger.prvc(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
 
     try {
         logger.info('Initializing adapters...').indent()
@@ -61,20 +62,17 @@ function convertRecursively(root: string, inDir: string, options: { outDir: stri
         directories.forEach(v => {
             const absInPath = path.join(inDir, v)
             const relPath = getRelativePath(root, absInPath)
-            const absOutPath = path.join(outDir, relPath)
 
             if ((fs.statSync(absInPath)).isDirectory()) {
                 logger.info(`Handling directory '{inDir}/${relPath}'...`).indent()
-                fs.mkdir(absOutPath)
-                logger.info(`Created directory '{outDir}/${relPath}'...`)
                 convertRecursively(root, absInPath, options)
-                logger.info(`Handled directory '{inDir}/${relPath}'...`).indent(-1)
+                logger.indent(-1)
             } else {
                 logger.info(`Handling file '{inDir}/${relPath}'...`).indent()
                 const content = fs.readFileSync(absInPath)
                 const file = { content, path: relPath }
                 convertSingleFile(file, options)
-                logger.info(`Handled file '{inDir}/${relPath}'...`).indent(-1)
+                logger.indent(-1)
             }
         })
     } catch (ex) {
@@ -86,11 +84,13 @@ function convertSingleFile(file: File, options: { outDir: string, adapters: Adap
     const { outDir, adapters, logger } = options
     try {
         for (const adapter of adapters) {
-            logger.info(`Executing '${adapter.constructor.name}'...`).indent()
             file = adapter.execute(file, logger)
-            logger.indent(-1)
         }
 
+        const filePath = path.join(outDir, path.dirname(file.path))
+        if (!fs.existsSync(filePath)) {
+            fs.mkdirSync(filePath, { recursive: true })
+        }
         fs.writeFileSync(path.join(outDir, file.path), file.content)
 
         logger.info(`Created file '{outDir}/${file.path}'.`)

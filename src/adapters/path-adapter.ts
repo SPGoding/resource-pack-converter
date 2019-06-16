@@ -8,7 +8,6 @@ export interface PathAdapterParams {
     operations: {
         /**
          * Specifies the files which this operation should handle. Should be an Regular Expression.
-         * File extensions like `.png` and `.png.mcmeta` should be omitted.
          */
         find: string,
         /**
@@ -26,7 +25,7 @@ export class PathAdapter implements Adapter {
             const regex = new RegExp(op.find)
             const path = replaceWithRegExp(op.moveTo, input.path, regex)
             if (path) {
-                logger.info(`Moved '${path}' to '${path}'.`)
+                logger.info(`Moved '{inDir}/${input.path}' to '{outDir}/${path}'.`)
                 return {
                     content: input.content,
                     path

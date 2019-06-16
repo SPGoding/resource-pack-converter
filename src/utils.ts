@@ -29,9 +29,8 @@ export function replaceWithRegExp(target: string, source: string, regex: RegExp)
     if (arr) {
         for (let i = arr.length - 1; i >= 0; i--) {
             const element = arr[i]
-            target = target.replace(new RegExp(`\\$${i + 1}`, 'g'), element)
+            target = target.replace(new RegExp(`\\$${i}`, 'g'), element ? element : '')
         }
-        target = target.replace(/\$0/g, source)
         return target
     } else {
         return ''
@@ -43,14 +42,7 @@ export function replaceWithRegExp(target: string, source: string, regex: RegExp)
  */
 export class Logger {
     private readonly _logs: string[] = []
-    private readonly _logFile: string | undefined
     private _indent: number = 0
-
-    constructor(logFile?: string) {
-        if (logFile) {
-            this._logFile = path.resolve(logFile)
-        }
-    }
 
     private _log(type: 'INFO' | 'WARN' | 'EROR' | 'PRVC', ...msg: string[]) {
         const date = new Date()
@@ -60,9 +52,6 @@ export class Logger {
         msg.forEach(v => {
             const m = `[${time}] [${type}] ${'  '.repeat(this._indent)}${v}`
             this._logs.push(m)
-            if (this._logFile) {
-                fs.appendFileSync(this._logFile, `${m}\n`)
-            }
         })
         return this
     }
@@ -113,12 +102,12 @@ export class Logger {
 }
 
 /**
- * Get the relative path of the specific directory navigated from the root.
- * @param root The root.
- * @param dir The specific directory.
+ * Get the relative path navigated from {from} to {to}.
+ * @param from The root.
+ * @param to The specific directory.
  */
-export function getRelativePath(root: string, dir: string): string {
-    const result = path.resolve(dir).replace(path.resolve(root), '').replace(/\\/g, '/')
+export function getRelativePath(from: string, to: string): string {
+    const result = path.relative(from, to).replace(/\\/g, '/')
     if (result[0] === '/') {
         return result.slice(1)
     } else {

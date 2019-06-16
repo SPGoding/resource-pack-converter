@@ -33,7 +33,8 @@ try {
         fs.removeSync(argv.out)
         fs.mkdirSync(argv.out, { recursive: true })
         // Conversion.
-        convert(argv.in, { conversion, outDir: argv.out })
+        const logger = convert(argv.in, { conversion, outDir: argv.out })
+        fs.writeFile(path.join(argv.out, './latest.log'), logger.toString())
     } else {
         throw `Usage: '${USAGE}'. Cannot find ${argv.in ? '' : 'in'}:${argv.out ? '' : 'out'}:${argv.from ? '' : 'from'}:${argv.to ? '' : 'to'}:${argv.force ? '' : 'force'}`
     }

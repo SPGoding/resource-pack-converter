@@ -22,6 +22,7 @@ const output = process.argv[4]
  * two resource packs (only support folders) and generate conversion files.
  * Use `npm run uti:analyzer ${fromDir} ${toDir} ${outDir}` to analyze differences between `${fromDir}` and `${toDir}`.
  * The result will be stored in `uti/analyzer/${outDir}`.
+ * e.g. `npm run uti:analyzer uti/input/1.6/ uti/input/1.7/ 1.6-1.7.json`
  * @author SPGoding
  */
 class Analyzer {
@@ -106,7 +107,7 @@ class Analyzer {
                 const content = fs.readFileSync(path.join(dir, v), { encoding: 'utf8' })
                 const sha1 = crypto.createHash('sha1').update(content).digest('hex')
 
-                array[path.join(dir, v).replace(path.join(dirPrefix), '').replace(/\\/g, '/')] = sha1
+                array[path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/')] = sha1
             }
         })
     }

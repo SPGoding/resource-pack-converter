@@ -3,8 +3,8 @@ import { replaceWithRegExp, Logger, getRelativePath } from '../utils'
 
 describe('utils.ts Tests', () => {
     describe('replaceWithRegExp() Tests', () => {
-        const source = 'abcdefghijk'
-        const regex = /\w/g
+        const source = 'abc123def'
+        const regex = /abc(\d+)(\w+)/
         it('Should insert nothing into plain text', () => {
             const target = 'foo'
 
@@ -12,26 +12,12 @@ describe('utils.ts Tests', () => {
 
             assert.strictEqual(actual, 'foo')
         })
-        it('Should replace one digit', () => {
-            const target = 'foo$1bar'
+        it('Should replace placeholders', () => {
+            const target = '$0,$1,$2'
 
             const actual = replaceWithRegExp(target, source, regex)
 
-            assert.strictEqual(actual, 'fooabar')
-        })
-        it('Should replace two digits', () => {
-            const target = 'foo$11$1$2$10$3bar'
-
-            const actual = replaceWithRegExp(target, source, regex)
-
-            assert.strictEqual(actual, 'fookabjcbar')
-        })
-        it('Should replace $0 with whole source', () => {
-            const target = 'foo$0bar'
-
-            const actual = replaceWithRegExp(target, source, regex)
-
-            assert.strictEqual(actual, 'fooabcdefghijkbar')
+            assert.strictEqual(actual, 'abc123def,123,def')
         })
     })
     describe('getRelativePath() Tests', () => {

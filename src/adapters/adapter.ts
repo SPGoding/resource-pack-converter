@@ -1,6 +1,6 @@
 import { File, Logger } from '../utils'
-import { PathAdapter } from './path-adapter'
-import { WarnAdapter } from './warn-adapter'
+import { PathAdapter, PathAdapterParams } from './path-adapter'
+import { WarnAdapter, WarnAdapterParams } from './warn-adapter'
 
 /**
  * All avaliable adapter classes.
@@ -31,7 +31,5 @@ export interface AdapterInitialization {
     /**
      * Stores all parameters used to initialize the adapter.
      */
-    params: {
-        [key: string]: any
-    }
+    params: PathAdapterParams | WarnAdapterParams
 }
