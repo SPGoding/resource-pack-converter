@@ -27,5 +27,3 @@ export interface Conversion {
      */
     adapters: AdapterInitialization[]
 }
-
-
