@@ -151,24 +151,10 @@ export const JE17ToJE18: Conversion = {
             }
         },
         {
-            id: 'PathAdapter',
-            params: {
-                operations: [
-                    {
-                        find: '^assets/minecraft/textures/items/fish_cooked\\.png(\\.mcmeta)?$',
-                        moveTo: 'assets/minecraft/textures/items/fish_cod_cooked.png$1'
-                    },
-                    {
-                        find: '^assets/minecraft/textures/items/fish_raw\\.png(\\.mcmeta)?$',
-                        moveTo: 'assets/minecraft/textures/items/fish_cod_raw.png$1'
-                    }
-                ]
-            }
-        },
-        {
             id: 'SkinAdapter',
             params: {
-                find: '^assets/minecraft/textures/entity/steve\\.png$'
+                find: '^assets/minecraft/textures/entity/steve\\.png$',
+                type: 'singleToDouble'
             }
         }
     ]

@@ -3,11 +3,12 @@ import { Version } from '../utils'
 import JE16ToJE17 from './je16-je17'
 import JE17ToJE16 from './je17-je16'
 import JE17ToJE18 from './je17-je18'
+import JE18ToJE17 from './je18-je17'
 
 /**
  * All avaliable adapter classes.
  */
-export const CONVERSIONS: Conversion[] = [JE16ToJE17, JE17ToJE16, JE17ToJE18]
+export const CONVERSIONS: Conversion[] = [JE16ToJE17, JE17ToJE16, JE17ToJE18, JE18ToJE17]
 
 /**
  * Contains a set of adapters.
