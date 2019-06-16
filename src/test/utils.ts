@@ -21,22 +21,6 @@ describe('utils.ts Tests', () => {
         })
     })
     describe('getRelativePath() Tests', () => {
-        it('Should handle the relative path', () => {
-            const root = 'F:\\.minecraft\\resourcepacks\\foo'
-            const dir = 'F:\\.minecraft\\resourcepacks\\foo\\assets\\pack.mcmeta'
-
-            const actual = getRelativePath(root, dir)
-
-            assert.strictEqual(actual, 'assets/pack.mcmeta')
-        })
-        it('Should handle the relative path of root', () => {
-            const root = 'F:\\.minecraft\\resourcepacks\\foo'
-            const dir = 'F:\\.minecraft\\resourcepacks\\foo'
-
-            const actual = getRelativePath(root, dir)
-
-            assert.strictEqual(actual, '')
-        })
         it('Should handle the relative path of relative paths', () => {
             const root = 'resourcepacks\\foo'
             const dir = 'resourcepacks\\foo\\assets\\pack.mcmeta'
