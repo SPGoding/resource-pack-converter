@@ -1,69 +1,43 @@
-import * as path from 'path'
+/**
+ * Usage.
+ */
+const USAGE = 'node lib --in ${inDir} --out ${outDir} --from ${fromVersion} --to ${toVersion} [--force=true]'
+
 import * as fs from 'fs-extra'
-import { File, Conversion, Logger } from './utils'
-import Adapter, { Adapters } from './adapters/adapter'
+import * as path from 'path'
+import * as minimist from 'minimist'
+import { convert } from './converter'
+import { CONVERSIONS, Conversion } from './conversions/conversion'
 
-export interface ConverterOptions {
-    outDir: string,
-    conversion: Conversion
-}
+const argv = minimist(process.argv.slice(2), { alias: { in: 'i', out: 'o', from: 'f', to: 't' } })
 
-export async function convert(src: string, options: ConverterOptions): Promise<Logger> {
-    const logger = new Logger()
-
-    try {
-        logger.info(`Duplicating '${path.join(src)}' to '${path.join(options.outDir)}'.`)
-        await fs.copy(src, options.outDir, { recursive: true })
-        logger.info(`Duplicated '${path.join(src)}' to '${path.join(options.outDir)}'.`)
-
-        logger.info('Initializing all adapters.')
-        const adapters: Adapter[] = options.conversion.adapters.map(adapterInit => {
-            for (const adapter of Adapters) {
-                if (adapter.name === adapterInit.id) {
-                    logger.info(`Initialized adapter ${adapter.name}${JSON.stringify(adapterInit.params)}.`)
-                    return new adapter(adapterInit.params)
-                }
-            }
-        })
-        logger.info('Initialized all adapters.')
-
-        convertRecursively(options.outDir, options.outDir, adapters, logger)
-    } catch (ex) {
-        logger.error(ex)
-    } finally {
-        return logger
-    }
-}
-
-async function convertRecursively(root: string, dir: string, adapters: Adapter[], logger: Logger) {
-    const files = await fs.readdir(dir)
-
-    files.forEach(async v => {
-        const filePath = path.join(dir, v).replace(path.join(root), '').replace(/\\/g, '/')
-
-        if ((await fs.stat(path.join(dir, v))).isDirectory()) {
-            logger.info(`Loading '${filePath}'.`)
-            convertRecursively(root, path.join(dir, v), adapters, logger)
-            logger.info(`Loaded '${filePath}'.`)
-        } else {
-            const content = await fs.readFile(path.join(dir, v))
-            const file: File = { content, path: filePath }
-            convertSingleFile(file, adapters, logger)
+try {
+    if (argv.in && argv.out && argv.from && argv.to) {
+        // Checking arguments.
+        if (!fs.existsSync(argv.in)) {
+            throw `Cannot find file '${argv.in}'.`
         }
-    })
-}
-
-async function convertSingleFile(file: File, adapters: Adapter[], logger: Logger) {
-    logger.info(`Adapting '${file.path}'.`)
-
-    for (const adapter of adapters) {
-        logger.info(`Executing '${adapter.constructor.name}'.`)
-        file = await adapter.execute(file, logger)
-        logger.info(`Executed '${adapter.constructor.name}'.`)
+        if (fs.existsSync(argv.out) && !argv.force) {
+            throw `Directory '${argv.out}' already exists.`
+        }
+        // Preparation.
+        let conversion: Conversion | undefined = undefined
+        for (const i of CONVERSIONS) {
+            if (i.from === argv.from && i.to === argv.to) {
+                conversion = i
+            }
+        }
+        if (!conversion) {
+            throw `Cannot find any conversions from '${argv.from}' into '${argv.to}'.`
+        }
+        fs.removeSync(argv.out)
+        fs.mkdirSync(argv.out, { recursive: true })
+        // Conversion.
+        convert(argv.in, { conversion, outDir: argv.out })
+    } else {
+        throw `Usage: '${USAGE}'. Cannot find ${argv.in ? '' : 'in'}:${argv.out ? '' : 'out'}:${argv.from ? '' : 'from'}:${argv.to ? '' : 'to'}:${argv.force ? '' : 'force'}`
     }
-
-    logger.info(`Adapted '${file.path}'.`)
-    return file
+} catch (ex) {
+    console.error(ex)
+    process.exit(1)
 }
-
-export default convert

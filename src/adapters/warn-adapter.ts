@@ -21,7 +21,7 @@ export interface WarnAdapterParams {
 export class WarnAdapter implements Adapter {
     constructor(private readonly params: WarnAdapterParams) { }
 
-    async execute(input: File, logger: Logger): Promise<File> {
+    execute(input: File, logger: Logger): File {
         for (const warning of this.params.warnings) {
             const regex = new RegExp(warning.find)
             if (input.path.match(regex)) {

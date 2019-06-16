@@ -20,8 +20,8 @@ const output = process.argv[4]
 /**
  * An resource pack analyzer which can find the differences (e.g. file names) between 
  * two resource packs (only support folders) and generate conversion files.
- * Use `npm run uti:analyzer ${dirFrom} ${dirTo} ${output}` to analyze differences between `${dirFrom}` and `${dirTo}`.
- * The result will be stored in `./uti/analyzer/${output}`.
+ * Use `npm run uti:analyzer ${fromDir} ${toDir} ${outDir}` to analyze differences between `${fromDir}` and `${toDir}`.
+ * The result will be stored in `uti/analyzer/${outDir}`.
  * @author SPGoding
  */
 class Analyzer {

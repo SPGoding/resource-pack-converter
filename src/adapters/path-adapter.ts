@@ -1,7 +1,7 @@
 import Adapter from './adapter'
 import { File, replaceWithRegExp, Logger } from '../utils'
 
-export interface MoveAdapterParams {
+export interface PathAdapterParams {
     /**
      * Stores all renaming operations.
      */
@@ -18,10 +18,10 @@ export interface MoveAdapterParams {
     }[]
 }
 
-export class MoveAdapter implements Adapter {
-    constructor(private readonly params: MoveAdapterParams) { }
+export class PathAdapter implements Adapter {
+    constructor(private readonly params: PathAdapterParams) { }
 
-    async execute(input: File, logger: Logger): Promise<File> {
+    execute(input: File, logger: Logger): File {
         for (const op of this.params.operations) {
             const regex = new RegExp(op.find)
             const path = replaceWithRegExp(op.moveTo, input.path, regex)

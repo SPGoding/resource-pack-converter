@@ -52,9 +52,9 @@ IT'S NOT AVALIABLE ACTUALLY.
     - `analyzer.js`: An resource pack analyzer which can find the differences (e.g. file names) between 
     two resource packs (only support folders) and generate conversion files. Use
     ```Bash
-    npm run uti:analyzer ${dirFrom} ${dirTo} ${output}
+    npm run uti:analyzer ${fromDir} ${toDir} ${outDir}
     ```
-    to analyze differences between `${dirFrom}` and `${dirTo}`. The result will be stored in `uti/analyzer/${output}`.
+    to analyze differences between `${fromDir}` and `${toDir}`. The result will be stored in `uti/analyzer/${outDir}`.
     e.g. 
     ```Bash
     npm run uti:analyzer uti/input/1.6/ uti/input/1.7/ 1.6-1.7.json
@@ -64,77 +64,25 @@ IT'S NOT AVALIABLE ACTUALLY.
 
 ### Overview
 
-The RPC will duplicate the input resource pack at first, and then execute all *adapters* orderly for each file 
-in the duplicated resource pack according to specific *conversion*.
+The RPC will decompressed the input resource pack if it's compressed, and then execute all *adapters* orderly for each file 
+in the resource pack according to specific *conversion*. All adapted files will be put in specific path under `${outDir}`,
+so nothing will be changed in the source resource pack.
 
 ### Adapters
 
-*Adapters* carry out operations for specific files in the resource pack, e.g. renaming files, scaling images, 
-changing text contents, etc. All adapters are written in TypeScript and should implement the `Adapter` interface. 
+*Adapters* carry out operations for single file in the resource pack, e.g. renaming, scaling image, 
+changing text content, etc. All adapters are written in TypeScript and should implement the `Adapter` interface. 
 They are located in `./src/adapters/`.
 
 Adapters may be referenced and initialized by *conversions*.
 
-Here are all built-in adapters.
-
-- [RenameAdapter](#RenameAdapter)
-- [WarnAdapter](#WarnAdapter)
-
-#### RenameAdapter
-
-Rename the input file according to `operations`.
-
-- `operations`: (Required) Array. Stores all renaming operations.
-    - An object.
-        - `find`: (Required) String. Specifies the files which this operation should handle. Should be an 
-        Regular Expression. File extensions like `.png` and `.png.mcmeta` should be omitted.
-        - `moveTo`: (Required) String. Specifies the new path.
-
-e.g.
-
-```JSON
-{
-    "operations": [
-        {
-            "find": "^assets/minecraft/textures/blocks/(\\w+)$", 
-            "moveTo": "assets/minecraft/textures/block/$1"
-        }
-    ]
-}
-```
-
-#### WarnAdapter
-
-Send wannings if there are specific files.
-
-- `warnings`: (Required) Array. Stores all warnings.
-    - An object.
-        - `find`: (Required) String. The warnings will be sent if specific files exist. Should be an 
-        Regular Expression.
-        - `send`: (Required) Array of strings.
-
-e.g.
-
-```JSON
-{
-    "warnings": [
-        {
-            "find": "assets/minecraft/lang/\\w+.json", 
-            "send": [
-                "You may want to update texts in $0."
-            ]
-        }
-    ]
-}
-```
-
 ### Conversions
 
-A *Conversion* contains a set of adapters. It's JSON formatted and stored in `./src/conversions/`.
+A *Conversion* contains a set of *adapter initializations*. It's stored in `./src/conversions/`.
 
 - The root tag.
-    - `adapters`: (Required) Array. Initialize adapters here.
-        - An object. Represents an adapter.
+    - `adapters`: (Required) Array. Contains a set of adapter initializations.
+        - An object. Represents an adapter initialization.
             - `id`: (Required) String. The identity of adapter.
             - `params`: (Required) Object. Stores all parameters used to initialize the adapter.
                 - *`key`*: Value.

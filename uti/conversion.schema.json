@@ -53,7 +53,7 @@
                         "properties": {
                             "id": {
                                 "enum": [
-                                    "RenameAdapter"
+                                    "PathAdapter"
                                 ]
                             },
                             "params": {

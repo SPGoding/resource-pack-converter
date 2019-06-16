@@ -1,44 +1,28 @@
+import * as fs from 'fs-extra'
+import * as path from 'path'
+
+/**
+ * Reprensets a file in the resource pack.
+ */
 export interface File {
+    /**
+     * The content of the file.
+     */
     content: Buffer,
+    /**
+     * The relative path navigated from the root of a resource pack.
+     */
     path: string
 }
 
+/**
+ * A game version which the resource pack is compatible with.
+ */
 export type Version = 'JE1.6' | 'JE1.7' | 'JE1.8' | 'JE1.9' | 'JE1.10' | 'JE1.11' | 'JE1.12' | 'JE1.13' | 'JE1.14'
 
-export interface AdapterInitialization {
-    /**
-     * The identity of adapter.
-     */
-    id: string,
-    /**
-     * Stores all parameters used to initialize the adapter.
-     */
-    params: {
-        [key: string]: any
-    }
-}
-
 /**
- * Contains a set of adapters.
- */
-export interface Conversion {
-    /**
-     * Specifies the game version which the conversion starts from.
-     */
-    from: Version,
-    /**
-     * Specifies the game version which the conversion ends with.
-     */
-    to: Version,
-    /**
-     * Initialize adapters here. Each object represents an adapter.
-     */
-    adapters: AdapterInitialization[]
-}
-
-/**
- * Replace the placeholders in `target` if `source.match(regex)`.
- * Otherwise return `''`.
+ * Replaces the placeholders (`$x`) in `target` if `source.match(regex)` and returns the result.
+ * Otherwise returns empty string (`''`).
  */
 export function replaceWithRegExp(target: string, source: string, regex: RegExp) {
     const arr = source.match(regex)
@@ -54,26 +38,90 @@ export function replaceWithRegExp(target: string, source: string, regex: RegExp)
     }
 }
 
+/**
+ * A logger.
+ */
 export class Logger {
-    private readonly _logs: string[]
+    private readonly _logs: string[] = []
+    private readonly _logFile: string | undefined
+    private _indent: number = 0
 
-    private _log(type: 'INFO' | 'WARNING' | 'ERROR', ...msg: string[]) {
-        msg.forEach(v => this._logs.push(`[${new Date().toLocaleTimeString()}][${type}] ${v}`))
+    constructor(logFile?: string) {
+        if (logFile) {
+            this._logFile = path.resolve(logFile)
+        }
     }
 
+    private _log(type: 'INFO' | 'WARN' | 'EROR' | 'PRVC', ...msg: string[]) {
+        const date = new Date()
+        const fixTwoDigits = (number: number) => number < 10 ? `0${number}` : number.toString()
+        const fixThreeDigits = (number: number) => number < 10 ? `00${number}` : number < 100 ? `0${number}` : number.toString()
+        const time = `${fixTwoDigits(date.getHours())}:${fixTwoDigits(date.getMinutes())}:${fixTwoDigits(date.getSeconds())}:${fixThreeDigits(date.getMilliseconds())}`
+        msg.forEach(v => {
+            const m = `[${time}] [${type}] ${'  '.repeat(this._indent)}${v}`
+            this._logs.push(m)
+            if (this._logFile) {
+                fs.appendFileSync(this._logFile, `${m}\n`)
+            }
+        })
+        return this
+    }
+
+    public indent(delta = 1) {
+        this._indent += delta
+    }
+
+    /**
+     * Log an information.
+     * @param msg The message.
+     */
     public info(...msg: string[]) {
-        this._log('INFO', ...msg)
+        return this._log('INFO', ...msg)
     }
 
+    /**
+     * Log a warning.
+     * @param msg The message.
+     */
     public warn(...msg: string[]) {
-        this._log('WARNING', ...msg)
+        return this._log('WARN', ...msg)
     }
 
+    /**
+     * Log an error.
+     * @param msg The message.
+     */
     public error(...msg: string[]) {
-        this._log('ERROR', ...msg)
+        return this._log('EROR', ...msg)
     }
 
+    /**
+     * Log a message which may leak user's privacy.
+     * @param msg The message.
+     */
+    public prvc(...msg: string[]) {
+        return this._log('PRVC', ...msg)
+    }
+
+
+    /**
+     * Get all logs.
+     */
     public toString() {
         return this._logs.join('\n')
+    }
+}
+
+/**
+ * Get the relative path of the specific directory navigated from the root.
+ * @param root The root.
+ * @param dir The specific directory.
+ */
+export function getRelativePath(root: string, dir: string): string {
+    const result = path.resolve(dir).replace(path.resolve(root), '').replace(/\\/g, '/')
+    if (result[0] === '/') {
+        return result.slice(1)
+    } else {
+        return result
     }
 }

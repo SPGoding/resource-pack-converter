@@ -1,14 +1,37 @@
 import { File, Logger } from '../utils'
-import { MoveAdapter } from './move-adapter'
+import { PathAdapter } from './path-adapter'
 import { WarnAdapter } from './warn-adapter'
 
+/**
+ * All avaliable adapter classes.
+ */
+export const ADAPTERS: any[] = [PathAdapter, WarnAdapter]
+
+/**
+ * Represents an adapter. Adapters carry out operations for single file in the resource pack, 
+ * e.g. renaming, scaling image, changing text content, etc.
+ */
 export default interface Adapter {
     constructor: Function
 
     /**
      * Adapts.
      */
-    execute(input: File, logger: Logger): Promise<File>
+    execute(input: File, logger: Logger): File
 }
 
-export const Adapters: any[] = [MoveAdapter, WarnAdapter]
+/**
+ * An initialization of adapter.
+ */
+export interface AdapterInitialization {
+    /**
+     * The identity of adapter.
+     */
+    id: string,
+    /**
+     * Stores all parameters used to initialize the adapter.
+     */
+    params: {
+        [key: string]: any
+    }
+}

@@ -1,5 +1,5 @@
 import * as assert from 'power-assert'
-import { replaceWithRegExp } from '../utils'
+import { replaceWithRegExp, Logger, getRelativePath } from '../utils'
 
 describe('utils.ts Tests', () => {
     describe('replaceWithRegExp() Tests', () => {
@@ -32,6 +32,45 @@ describe('utils.ts Tests', () => {
             const actual = replaceWithRegExp(target, source, regex)
 
             assert.strictEqual(actual, 'fooabcdefghijkbar')
+        })
+    })
+    describe('getRelativePath() Tests', () => {
+        it('Should handle the relative path', () => {
+            const root = 'F:\\.minecraft\\resourcepacks\\foo'
+            const dir = 'F:\\.minecraft\\resourcepacks\\foo\\assets\\pack.mcmeta'
+
+            const actual = getRelativePath(root, dir)
+
+            assert.strictEqual(actual, 'assets/pack.mcmeta')
+        })
+        it('Should handle the relative path of root', () => {
+            const root = 'F:\\.minecraft\\resourcepacks\\foo'
+            const dir = 'F:\\.minecraft\\resourcepacks\\foo'
+
+            const actual = getRelativePath(root, dir)
+
+            assert.strictEqual(actual, '')
+        })
+        it('Should handle the relative path of relative paths', () => {
+            const root = 'resourcepacks\\foo'
+            const dir = 'resourcepacks\\foo\\assets\\pack.mcmeta'
+
+            const actual = getRelativePath(root, dir)
+
+            assert.strictEqual(actual, 'assets/pack.mcmeta')
+        })
+    })
+    describe('Logger Tests', () => {
+        describe('info() Tests', () => {
+            it('Should send info', () => {
+                const logger = new Logger()
+                const string = 'Test info.'
+
+                logger.info(string)
+                const actual = logger.toString()
+
+                assert(actual.indexOf('[INFO] Test info.') !== -1)
+            })
         })
     })
 })
