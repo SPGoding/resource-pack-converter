@@ -1,11 +1,15 @@
 import { Conversion } from './conversion'
 import SkinAdapter from '../adapters/skin-adapter'
 import WarnAdapter from '../adapters/warn-adapter'
+import PackMcmetaAdapter from '../adapters/pack-mcmeta-adapter'
 
 export const JE17ToJE18: Conversion = {
     from: 'JE1.7',
     to: 'JE1.8',
     adapters: [
+        new PackMcmetaAdapter({
+            changeFormatTo: 1
+        }),
         new WarnAdapter({
             warnings: [
                 {

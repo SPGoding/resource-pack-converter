@@ -1,10 +1,14 @@
 import { Conversion } from './conversion'
 import PathAdapter from '../adapters/path-adapter'
+import PackMcmetaAdapter from '../adapters/pack-mcmeta-adapter'
 
 export const JE17ToJE16: Conversion = {
     from: 'JE1.7',
     to: 'JE1.6',
     adapters: [
+        new PackMcmetaAdapter({
+            changeFormatTo: 1
+        }),
         new PathAdapter({
             operations: [
                 {
