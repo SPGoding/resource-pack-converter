@@ -22,7 +22,7 @@ export const JE18ToJE19: Conversion = {
                         '^assets/minecraft/textures/gui/widgets\\.png$',
                     ],
                     send: [
-                        "You may want to add new textures in '{outDir}/$0'."
+                        'You may want to add new textures.'
                     ]
                 }]
         })

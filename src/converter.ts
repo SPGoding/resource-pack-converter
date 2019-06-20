@@ -1,8 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
+import Adapter from './adapters/adapter'
 import { File, Logger, getRelativePath } from './utils'
 import { Conversion } from './conversions/conversion'
-import Adapter, { ADAPTERS } from './adapters/adapter'
 
 /**
  * The options for converter.
@@ -35,14 +35,7 @@ export async function convert(src: string, options: ConverterOptions) {
 
     try {
         logger.info('Initializing adapters...').indent()
-        const adapters: Adapter[] = conversion.adapters.map(adapterInit => {
-            for (const adapter of ADAPTERS) {
-                if (adapter.name === adapterInit.id) {
-                    logger.info(`Initialized adapter '${adapter.name}${JSON.stringify(adapterInit.params)}'.`)
-                    return new adapter(adapterInit.params)
-                }
-            }
-        })
+        const adapters: Adapter[] = conversion.adapters
         logger.info(`Initialized ${adapters.length} adapter(s).`).indent(-1)
 
         await convertRecursively(inDir, inDir, { outDir, adapters, logger })

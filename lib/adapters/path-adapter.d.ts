@@ -15,7 +15,7 @@ export interface PathAdapterParams {
         moveTo: string;
     }[];
 }
-export declare class PathAdapter implements Adapter {
+export default class PathAdapter implements Adapter {
     private readonly params;
     constructor(params: PathAdapterParams);
     execute(input: File, logger: Logger): Promise<File>;
