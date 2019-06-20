@@ -18,7 +18,7 @@ export interface WarnAdapterParams {
     }[]
 }
 
-export class WarnAdapter implements Adapter {
+export default class WarnAdapter implements Adapter {
     constructor(private readonly params: WarnAdapterParams) { }
 
     async execute(input: File, logger: Logger): Promise<File> {

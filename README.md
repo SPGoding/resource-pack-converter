@@ -74,18 +74,14 @@ so nothing will be changed in the source resource pack.
 changing text content, etc. All adapters are written in TypeScript and should implement the `Adapter` interface. 
 They are located in `./src/adapters/`.
 
-Adapters may be referenced and initialized by *conversions*.
+Adapters may be referenced in *conversions*.
 
 ### Conversions
 
-A *Conversion* contains a set of *adapter initializations*. It's stored in `./src/conversions/`.
+A *Conversion* contains a set of *adapters*. It's stored in `./src/conversions/`.
 
 - The root tag.
-    - `adapters`: (Required) Array. Contains a set of adapter initializations.
-        - An object. Represents an adapter initialization.
-            - `id`: (Required) String. The identity of adapter.
-            - `params`: (Required) Object. Stores all parameters used to initialize the adapter.
-                - *`key`*: Value.
+    - `adapters`: (Required) Array. Contains a set of adapters.
     - `from`: (Required) String. Specifies the game version which the conversion starts from.
     - `to`: (Required) String. Specifies the game version which the conversion ends with.
 

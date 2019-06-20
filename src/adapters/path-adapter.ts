@@ -17,7 +17,7 @@ export interface PathAdapterParams {
     }[]
 }
 
-export class PathAdapter implements Adapter {
+export default class PathAdapter implements Adapter {
     constructor(private readonly params: PathAdapterParams) { }
 
     async execute(input: File, logger: Logger): Promise<File> {
