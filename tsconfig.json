@@ -15,8 +15,5 @@
         "strictNullChecks": true,
         "declaration": true,
         "newLine": "LF"
-    },
-    "exclude": [
-        "src/test/**/*.ts"
-    ]
+    }
 }
