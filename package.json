@@ -14,6 +14,10 @@
         "uti:analyzer": "node uti/analyzer",
         "watch": "tsc -w"
     },
+    "bin": {
+        "rpc": "lib/index.js",
+        "resource-pack-converter": "lib/index.js"
+    },
     "directories": {
         "test": "src/test/"
     },
