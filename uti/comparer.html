@@ -99,13 +99,13 @@
             window.localStorage.setItem('outDir', outDir.value)
             const json = JSON.parse(array.value)
             array.value = JSON.stringify(json, undefined, 4)
+            const relativeDir = json[index]
             if (index < json.length - 1) {
                 index += 1
             } else {
                 alert('End!')
                 index = 0
             }
-            const relativeDir = json[index]
             leftImg.src = ''
             rightImg.src = ''
             code.innerHTML = relativeDir
