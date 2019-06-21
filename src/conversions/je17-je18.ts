@@ -28,6 +28,24 @@ export const JE17ToJE18: Conversion = {
                     ]
                 },
                 {
+                    find: [
+                        '^assets/minecraft/textures/blocks/leaves_acacia_opaque\\.png$',
+                        '^assets/minecraft/textures/blocks/leaves_big_oak_opaque\\.png$',
+                        '^assets/minecraft/textures/blocks/leaves_birch_opaque\\.png$',
+                        '^assets/minecraft/textures/blocks/leaves_jungle_opaque\\.png$',
+                        '^assets/minecraft/textures/blocks/leaves_oak_opaque\\.png$',
+                        '^assets/minecraft/textures/blocks/leaves_spruce_opaque\\.png$',
+                        '^assets/minecraft/textures/items/skull_creeper\\.png$',
+                        '^assets/minecraft/textures/items/skull_skeleton\\.png$',
+                        '^assets/minecraft/textures/items/skull_steve\\.png$',
+                        '^assets/minecraft/textures/items/skull_wither\\.png$',
+                        '^assets/minecraft/textures/items/skull_zombie\\.png$'
+                    ],
+                    send: [
+                        'This file may not work as intended.',
+                    ]
+                },
+                {
                     find: '^pack.mcmeta$',
                     send: [
                         'You may want to add a ton of blockstates and models.',
