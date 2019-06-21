@@ -17,7 +17,7 @@ export interface PathAdapterParams {
     }[]
 }
 
-export class PathAdapter implements Adapter {
+export default class PathAdapter implements Adapter {
     constructor(private readonly params: PathAdapterParams) { }
 
     async execute(input: File, logger: Logger): Promise<File> {
@@ -29,7 +29,7 @@ export class PathAdapter implements Adapter {
                 const regex = new RegExp(i)
                 const path = replaceWithRegExp(op.moveTo, input.path, regex)
                 if (path) {
-                    logger.info(`Moved '{inDir}/${input.path}' to '{outDir}/${path}'.`)
+                    logger.info(`Moved to '{outDir}/${path}'.`)
                     return {
                         content: input.content,
                         path

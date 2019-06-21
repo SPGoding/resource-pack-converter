@@ -1,4 +1,4 @@
-import { AdapterInitialization } from '../adapters/adapter';
+import Adapter from '../adapters/adapter';
 import { Version } from '../utils';
 /**
  * All avaliable adapter classes.
@@ -17,7 +17,7 @@ export interface Conversion {
      */
     to: Version;
     /**
-     * Contains a set of adapter initializations.
+     * Contains a set of adapters.
      */
-    adapters: AdapterInitialization[];
+    adapters: Adapter[];
 }

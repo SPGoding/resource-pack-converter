@@ -42,11 +42,13 @@
     </div>
     <div id="left" style="text-align: center;">
         <h1>FROM</h1>
-        <img id="leftImg" width="10%" height="10%" />
+        <a id="leftAnchor" href="#">Open file</a><br />
+        <img id="leftImg" width="20%" height="20%" />
     </div>
     <div id="right" style="text-align: center;">
         <h1>TO</h1>
-        <img id="rightImg" width="10%" height="10%" />
+        <a id="rightAnchor" href="#">Open file</a><br />
+        <img id="rightImg" width="20%" height="20%" />
     </div>
     <script>
         "use strict"
@@ -58,6 +60,8 @@
         const code = document.getElementById('code')
         const leftImg = document.getElementById('leftImg')
         const rightImg = document.getElementById('rightImg')
+        const leftAnchor = document.getElementById('leftAnchor')
+        const rightAnchor = document.getElementById('rightAnchor')
         let index = 0
 
         inDir.value = window.localStorage.getItem('inDir')
@@ -95,21 +99,21 @@
             window.localStorage.setItem('outDir', outDir.value)
             const json = JSON.parse(array.value)
             array.value = JSON.stringify(json, undefined, 4)
+            const relativeDir = json[index]
             if (index < json.length - 1) {
                 index += 1
             } else {
                 alert('End!')
                 index = 0
             }
-            const relativeDir = json[index]
             leftImg.src = ''
             rightImg.src = ''
             code.innerHTML = relativeDir
             if (relativeDir) {
                 leftImg.src = pathJoin(inDir.value, relativeDir)
+                leftAnchor.href = pathJoin(inDir.value, relativeDir)
                 rightImg.src = pathJoin(outDir.value, relativeDir)
-                // readTextFile(pathJoin(inDir.value, relativeDir), leftCode)
-                // readTextFile(pathJoin(outDir.value, relativeDir), rightCode)
+                rightAnchor.href = pathJoin(outDir.value, relativeDir)
             }
         }
 

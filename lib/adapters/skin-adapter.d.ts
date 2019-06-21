@@ -10,7 +10,7 @@ export interface SkinAdapterParams {
      */
     type: 'singleToDouble' | 'doubleToSingle';
 }
-export declare class SkinAdapter implements Adapter {
+export default class SkinAdapter implements Adapter {
     private readonly params;
     constructor(params: SkinAdapterParams);
     execute(input: File, logger: Logger): Promise<File>;

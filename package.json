@@ -14,6 +14,10 @@
         "uti:analyzer": "node uti/analyzer",
         "watch": "tsc -w"
     },
+    "bin": {
+        "rpc": "lib/index.js",
+        "resource-pack-converter": "lib/index.js"
+    },
     "directories": {
         "test": "src/test/"
     },
@@ -23,7 +27,7 @@
         "minimist": "^1.2.0"
     },
     "devDependencies": {
-        "@semantic-release/git": "^7.0.8",
+        "@semantic-release/git": "^7.0.12",
         "@types/fs-extra": "^7.0.0",
         "@types/minimist": "^1.2.0",
         "@types/mocha": "^5.2.7",

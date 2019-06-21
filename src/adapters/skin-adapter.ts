@@ -14,7 +14,7 @@ export interface SkinAdapterParams {
     type: 'singleToDouble' | 'doubleToSingle'
 }
 
-export class SkinAdapter implements Adapter {
+export default class SkinAdapter implements Adapter {
     constructor(private readonly params: SkinAdapterParams) { }
 
     async execute(input: File, logger: Logger): Promise<File> {
@@ -40,7 +40,7 @@ export class SkinAdapter implements Adapter {
                 ctx.drawImage(img, sx2, sy2, slength, slength, x2, y, slength, slength)
                 input.content = canvas.toBuffer('image/png')
 
-                logger.info(`Added second layer for skin '{inDir}/${path}'.`)
+                logger.info('Added second layer for skin.')
                 return input
             } else {
                 const img = await loadImage(input.content)
@@ -50,7 +50,7 @@ export class SkinAdapter implements Adapter {
                 ctx.drawImage(img, 0, 0)
                 input.content = canvas.toBuffer('image/png')
 
-                logger.info(`Removed second layer for skin '{inDir}/${path}'.`)
+                logger.info('Removed second layer for skin.')
                 return input
             }
         } else {

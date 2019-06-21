@@ -105,7 +105,12 @@ class Analyzer {
                 this.recurse(dirPrefix, path.join(dir, v), array)
             } else {
                 const content = fs.readFileSync(path.join(dir, v), { encoding: 'utf8' })
-                const sha1 = crypto.createHash('sha1').update(content).digest('hex')
+                let sha1
+                if (path.extname(v) === '.json') {
+                    sha1 = crypto.createHash('sha1').update(JSON.stringify(JSON.parse(content))).digest('hex')
+                } else {
+                    sha1 = crypto.createHash('sha1').update(content).digest('hex')
+                }
 
                 array[path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/')] = sha1
             }
