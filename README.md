@@ -24,13 +24,12 @@ any version to another version.
 
 ## Usage
 
-You can use it via the official website or importing it to your project.
+You can use it via the Command Line Tool or importing it to your project.
 
-### Use it Online
-
-Open [the official website](https://rpc.spgoding.com).
-
-IT'S NOT AVALIABLE ACTUALLY.
+### Use via Command Line Tool
+1. Make sure you have [nodejs](https://nodejs.org/en/download/) installed on your computer.
+2. Execute `npm i resource-pack-converter -g` in your command line (e.g. PowerShell, cmd, bash, etc.)
+3. *TODO*
 
 ### Import it to your Project
 
