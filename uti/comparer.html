@@ -43,10 +43,12 @@
     <div id="left" style="text-align: center;">
         <h1>FROM</h1>
         <img id="leftImg" width="10%" height="10%" />
+        <a id="leftAnchor" href="#">Open file</a>
     </div>
     <div id="right" style="text-align: center;">
         <h1>TO</h1>
         <img id="rightImg" width="10%" height="10%" />
+        <a id="rightAnchor" href="#">Open file</a>
     </div>
     <script>
         "use strict"
@@ -58,6 +60,8 @@
         const code = document.getElementById('code')
         const leftImg = document.getElementById('leftImg')
         const rightImg = document.getElementById('rightImg')
+        const leftAnchor = document.getElementById('leftAnchor')
+        const rightAnchor = document.getElementById('rightAnchor')
         let index = 0
 
         inDir.value = window.localStorage.getItem('inDir')
@@ -107,7 +111,9 @@
             code.innerHTML = relativeDir
             if (relativeDir) {
                 leftImg.src = pathJoin(inDir.value, relativeDir)
+                leftAnchor.href = pathJoin(inDir.value, relativeDir)
                 rightImg.src = pathJoin(outDir.value, relativeDir)
+                rightAnchor.href = pathJoin(outDir.value, relativeDir)
                 // readTextFile(pathJoin(inDir.value, relativeDir), leftCode)
                 // readTextFile(pathJoin(outDir.value, relativeDir), rightCode)
             }

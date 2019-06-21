@@ -34,9 +34,8 @@ export async function convert(src: string, options: ConverterOptions) {
     logger.prvc(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
 
     try {
-        logger.info('Initializing adapters...').indent()
-        const adapters: Adapter[] = conversion.adapters
-        logger.info(`Initialized ${adapters.length} adapter(s).`).indent(-1)
+        const adapters = conversion.adapters
+        logger.info(`Initialized ${adapters.length} adapter(s).`)
 
         await convertRecursively(inDir, inDir, { outDir, adapters, logger })
         logger.info('Finished conversion.')
