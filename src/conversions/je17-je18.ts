@@ -1,7 +1,7 @@
 import { Conversion } from './conversion'
-import SkinAdapter from '../adapters/skin-adapter'
-import WarnAdapter from '../adapters/warn-adapter'
-import PackMcmetaAdapter from '../adapters/pack-mcmeta-adapter'
+import WarnAdapter from '../adapters/general/warn-adapter'
+import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
+import SkinAdapter from '../adapters/je17-je18/skin-adapter'
 
 export const JE17ToJE18: Conversion = {
     from: 'JE1.7',
@@ -172,8 +172,7 @@ export const JE17ToJE18: Conversion = {
             ]
         }),
         new SkinAdapter({
-            find: '^assets/minecraft/textures/entity/steve\\.png$',
-            type: 'singleToDouble'
+            find: '^assets/minecraft/textures/entity/steve\\.png$'
         })
     ]
 }

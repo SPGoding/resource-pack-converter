@@ -1,6 +1,6 @@
-import Adapter from './adapter'
+import Adapter from '../adapter'
 
-import { File, Logger, PackMcmeta } from '../utils'
+import { File, Logger, PackMcmeta } from '../../utils'
 
 export interface PackMcmetaAdapterParams {
     /**

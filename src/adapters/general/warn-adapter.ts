@@ -1,5 +1,5 @@
-import Adapter from './adapter'
-import { File, Logger, replaceWithRegExp } from '../utils'
+import Adapter from '../adapter'
+import { File, Logger, replaceWithRegExp } from '../../utils'
 
 export interface WarnAdapterParams {
     /**

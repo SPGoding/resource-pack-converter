@@ -1,5 +1,5 @@
-import Adapter from './adapter'
-import { File, replaceWithRegExp, Logger } from '../utils'
+import Adapter from '../adapter'
+import { File, replaceWithRegExp, Logger } from '../../utils'
 
 export interface PathAdapterParams {
     /**

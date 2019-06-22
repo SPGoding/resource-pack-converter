@@ -1,6 +1,6 @@
 import { Conversion } from './conversion'
-import PathAdapter from '../adapters/path-adapter'
-import PackMcmetaAdapter from '../adapters/pack-mcmeta-adapter'
+import PathAdapter from '../adapters/general/path-adapter'
+import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
 
 export const JE17ToJE16: Conversion = {
     from: 'JE1.7',
