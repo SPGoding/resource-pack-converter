@@ -39,5 +39,13 @@ describe('utils.ts Tests', () => {
 
             assert.deepStrictEqual(actual, { namespacedID: 'minecraft:item/diamond_sword', type: 'textures' })
         })
+        it('Should handle non-resource file', () => {
+            const relPath = 'pack.mcmeta'
+            const ext = 'png'
+
+            const actual = getNamespacedID(relPath, ext)
+
+            assert.deepStrictEqual(actual, { namespacedID: 'pack.mcmeta', type: '?' })
+        })
     })
 })

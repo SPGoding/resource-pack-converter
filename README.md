@@ -1,6 +1,6 @@
 # Resource Pack Converter
 
-[![CircleCI](https://img.shields.io/circleci/build/gh/SPGoding/resource-pack-converter.svg?logo=circleci&style=flat-square&token=bb6d895d4f5fe0183fd8220ce3d01e860ecf59bb)](https://circleci.com/gh/SPGoding/resource-pack-converter)
+[![CircleCI](https://img.shields.io/circleci/build/gh/SPGoding/resource-pack-converter/dev.svg?logo=circleci&style=flat-square&token=bb6d895d4f5fe0183fd8220ce3d01e860ecf59bb)](https://circleci.com/gh/SPGoding/resource-pack-converter)
 [![npm](https://img.shields.io/npm/v/resource-pack-converter.svg?logo=npm&style=flat-square)](https://npmjs.com/package/resource-pack-converter)
 [![License](https://img.shields.io/github/license/SPGoding/resource-pack-converter.svg?style=flat-square)](https://github.com/SPGoding/resource-pack-converter/blob/master/LICENSE)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square)](https://github.com/semantic-release/semantic-release)

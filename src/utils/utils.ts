@@ -59,11 +59,14 @@ export function getRelativePath(from: string, to: string): string {
  */
 export function getNamespacedID(path: string, ext: string) {
     const parts = path.split('/')
-    const namespace = parts[1]
-    const type = parts[2]
-    const name = parts.slice(3).join('/').slice(0, -ext.length - 1)
-
-    return { namespacedID: `${namespace}:${name}`, type }
+    if (parts.length >= 4) {
+        const namespace = parts[1]
+        const type = parts[2]
+        const name = parts.slice(3).join('/').slice(0, -ext.length - 1)
+        return { namespacedID: `${namespace}:${name}`, type }
+    } else {
+        return { namespacedID: path, type: '?' }
+    }
 }
 
 /**
@@ -73,6 +76,9 @@ export function getNamespacedID(path: string, ext: string) {
  * @param ext The file extension.
  */
 export function getRelFromNid(namespacedID: string, type: string, ext: string) {
+    if (namespacedID.indexOf(':') === -1) {
+        namespacedID = `minecraft:${namespacedID}`
+    }
     const parts = namespacedID.split(':')
     const namespace = parts[0]
     const name = parts[1]
