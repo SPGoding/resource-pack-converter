@@ -1,6 +1,7 @@
 import Adapter from '../adapter'
 
-import { File, Logger, PackMcmeta } from '../../utils'
+import { Resource, PackMcmeta } from '../../utils/utils'
+import { Logger } from '../../utils/logger'
 
 export interface PackMcmetaAdapterParams {
     /**
@@ -12,7 +13,7 @@ export interface PackMcmetaAdapterParams {
 export default class PackMcmetaAdapter implements Adapter {
     constructor(private readonly params: PackMcmetaAdapterParams) { }
 
-    async execute(input: File, logger: Logger): Promise<File> {
+    async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (input.path === 'pack.mcmeta') {
             const obj: PackMcmeta = JSON.parse(input.content.toString('utf8'))
             obj['$resource-pack-converter'] = {

@@ -1,5 +1,6 @@
 import Adapter from '../adapter'
-import { File, Logger, replaceWithRegExp } from '../../utils'
+import { Resource, replaceWithRegExp } from '../../utils/utils'
+import { Logger } from '../../utils/logger'
 
 export interface WarnAdapterParams {
     /**
@@ -21,7 +22,7 @@ export interface WarnAdapterParams {
 export default class WarnAdapter implements Adapter {
     constructor(private readonly params: WarnAdapterParams) { }
 
-    async execute(input: File, logger: Logger): Promise<File> {
+    async execute(input: Resource, logger: Logger): Promise<Resource> {
         for (const warning of this.params.warnings) {
             if (typeof warning.find === 'string') {
                 warning.find = [warning.find]

@@ -1,5 +1,5 @@
 import * as assert from 'power-assert'
-import { replaceWithRegExp, Logger, getRelativePath } from '../utils'
+import { replaceWithRegExp, getRelFromAbs } from '../../utils/utils'
 
 describe('utils.ts Tests', () => {
     describe('replaceWithRegExp() Tests', () => {
@@ -25,22 +25,9 @@ describe('utils.ts Tests', () => {
             const root = 'resourcepacks/foo'
             const dir = 'resourcepacks/foo/assets/pack.mcmeta'
 
-            const actual = getRelativePath(root, dir)
+            const actual = getRelFromAbs(root, dir)
 
             assert.strictEqual(actual, 'assets/pack.mcmeta')
-        })
-    })
-    describe('Logger Tests', () => {
-        describe('info() Tests', () => {
-            it('Should send info', () => {
-                const logger = new Logger()
-                const string = 'Test info.'
-
-                logger.info(string)
-                const actual = logger.toString()
-
-                assert(actual.indexOf('[INFO] Test info.') !== -1)
-            })
         })
     })
 })

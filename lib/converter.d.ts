@@ -1,4 +1,4 @@
-import { Logger } from './utils';
+import { Logger } from './utils/logger';
 import { Conversion } from './conversions/conversion';
 /**
  * The options for converter.

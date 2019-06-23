@@ -1,5 +1,6 @@
 import Adapter from '../adapter'
-import { File, replaceWithRegExp, Logger } from '../../utils'
+import { Resource, replaceWithRegExp } from '../../utils/utils'
+import { Logger } from '../../utils/logger'
 
 export interface PathAdapterParams {
     /**
@@ -20,7 +21,7 @@ export interface PathAdapterParams {
 export default class PathAdapter implements Adapter {
     constructor(private readonly params: PathAdapterParams) { }
 
-    async execute(input: File, logger: Logger): Promise<File> {
+    async execute(input: Resource, logger: Logger): Promise<Resource> {
         for (const op of this.params.operations) {
             if (typeof op.find === 'string') {
                 op.find = [op.find]

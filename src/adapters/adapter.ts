@@ -1,4 +1,5 @@
-import { File, Logger } from '../utils'
+import { Resource } from '../utils/utils'
+import { Logger } from '../utils/logger'
 
 /**
  * Represents an adapter. Adapters carry out operations for single file in the resource pack, 
@@ -10,5 +11,5 @@ export default interface Adapter {
     /**
      * Adapts.
      */
-    execute(input: File, logger: Logger): Promise<File>
+    execute(input: Resource, logger: Logger): Promise<Resource>
 }

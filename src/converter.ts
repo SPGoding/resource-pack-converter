@@ -1,7 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import Adapter from './adapters/adapter'
-import { File, Logger, getRelativePath } from './utils'
+import { Resource, getRelFromAbs, getNamespacedID } from './utils/utils'
+import { Logger } from './utils/logger'
 import { Conversion } from './conversions/conversion'
 
 /**
@@ -53,7 +54,7 @@ async function convertRecursively(root: string, inDir: string, options: { outDir
 
         for (const i of directories) {
             const absInPath = path.join(inDir, i)
-            const relPath = getRelativePath(root, absInPath)
+            const relPath = getRelFromAbs(root, absInPath)
 
             if ((await fs.stat(absInPath)).isDirectory()) {
                 logger.info(`Handling directory '{inDir}/${relPath}'...`).indent()
@@ -62,8 +63,8 @@ async function convertRecursively(root: string, inDir: string, options: { outDir
             } else {
                 logger.info(`Handling file '{inDir}/${relPath}'...`).indent()
                 const content = await fs.readFile(absInPath)
-                const file = { content, path: relPath }
-                await convertSingleFile(file, options)
+                const resource = { content, path: relPath }
+                await convertSingleFile(resource, options)
                 logger.indent(-1)
             }
         }
@@ -72,19 +73,19 @@ async function convertRecursively(root: string, inDir: string, options: { outDir
     }
 }
 
-async function convertSingleFile(file: File, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
+async function convertSingleFile(resource: Resource, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
     const { outDir, adapters, logger } = options
     try {
         for (const adapter of adapters) {
-            file = await adapter.execute(file, logger)
+            resource = await adapter.execute(resource, logger)
         }
 
-        const filePath = path.join(outDir, path.dirname(file.path))
-        if (!fs.existsSync(filePath)) {
-            fs.mkdirSync(filePath, { recursive: true })
+        const absPath = path.join(outDir, path.dirname(resource.path))
+        if (!fs.existsSync(absPath)) {
+            fs.mkdirSync(absPath, { recursive: true })
         }
-        await fs.writeFile(path.join(outDir, file.path), file.content)
-        logger.info(`Created file '{outDir}/${file.path}'.`)
+        await fs.writeFile(path.join(outDir, resource.path), resource.content)
+        logger.info(`Created file '{outDir}/${resource.path}'.`)
 
     } catch (ex) {
         logger.error(ex)

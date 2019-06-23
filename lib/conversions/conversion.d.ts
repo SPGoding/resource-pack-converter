@@ -1,5 +1,5 @@
 import Adapter from '../adapters/adapter';
-import { Version } from '../utils';
+import { Version } from '../utils/utils';
 /**
  * All avaliable adapter classes.
  */
