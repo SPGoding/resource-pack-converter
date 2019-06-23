@@ -8,14 +8,14 @@ export interface SkinAdapterParams {
     /**
      * Specifies the files which this adapter should handle. Should be an Regular Expression.
      */
-    find: string
+    find: RegExp
 }
 
 export default class SkinAdapter implements Adapter {
     constructor(private readonly params: SkinAdapterParams) { }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
-        const regex = new RegExp(this.params.find)
+        const regex = this.params.find
         const path = replaceWithRegExp('$0', input.path, regex)
 
         if (path) {

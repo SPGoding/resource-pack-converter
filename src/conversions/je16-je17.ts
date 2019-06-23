@@ -14,13 +14,13 @@ export const JE16ToJE17: Conversion = {
         new WarnAdapter({
             warnings: [
                 {
-                    find: '^assets/minecraft/lang/\\w+.lang$',
+                    find: /^assets\/minecraft\/lang\/\w+\.lang$/,
                     send: [
                         'You may want to update translations.'
                     ]
                 },
                 {
-                    find: '^pack.mcmeta$',
+                    find: /^pack\.mcmeta$/,
                     send: [
                         'You may want to add following files:',
                         "'{outDir}/assets/minecraft/textures/blocks/dirt_podzol_side.png'",

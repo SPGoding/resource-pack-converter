@@ -11,7 +11,7 @@ export interface WarnAdapterParams {
          * The warnings will be sent if specific files exist. Should be an 
          * Regular Expression.
          */
-        find: string | string[],
+        find: RegExp | RegExp[],
         /**
          * Array of strings.
          */
@@ -24,11 +24,11 @@ export default class WarnAdapter implements Adapter {
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         for (const warning of this.params.warnings) {
-            if (typeof warning.find === 'string') {
+            if (warning.find instanceof RegExp) {
                 warning.find = [warning.find]
             }
             for (const i of warning.find) {
-                const regex = new RegExp(i)
+                const regex = i
                 if (input.path.match(regex)) {
                     const messages = warning.send.map(v => replaceWithRegExp(v, input.path, regex))
                     logger.warn(...messages)

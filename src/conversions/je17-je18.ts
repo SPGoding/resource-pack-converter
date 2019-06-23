@@ -13,15 +13,15 @@ export const JE17ToJE18: Conversion = {
         new WarnAdapter({
             warnings: [
                 {
-                    find: '^assets/minecraft/lang/\\w+.lang$',
+                    find: /^assets\/minecraft\/lang\/\w+\.lang$/,
                     send: [
                         'You may want to update translations.'
                     ]
                 },
                 {
                     find: [
-                        '^assets/minecraft/textures/gui/container/enchanting_table.png$',
-                        '^assets/minecraft/textures/gui/widgets.png$'
+                        /^assets\/minecraft\/textures\/gui\/container\/enchanting_table\.png$/,
+                        /^assets\/minecraft\/textures\/gui\/widgets\.png$/
                     ],
                     send: [
                         'You may want to add new textures.'
@@ -29,24 +29,24 @@ export const JE17ToJE18: Conversion = {
                 },
                 {
                     find: [
-                        '^assets/minecraft/textures/blocks/leaves_acacia_opaque\\.png$',
-                        '^assets/minecraft/textures/blocks/leaves_big_oak_opaque\\.png$',
-                        '^assets/minecraft/textures/blocks/leaves_birch_opaque\\.png$',
-                        '^assets/minecraft/textures/blocks/leaves_jungle_opaque\\.png$',
-                        '^assets/minecraft/textures/blocks/leaves_oak_opaque\\.png$',
-                        '^assets/minecraft/textures/blocks/leaves_spruce_opaque\\.png$',
-                        '^assets/minecraft/textures/items/skull_creeper\\.png$',
-                        '^assets/minecraft/textures/items/skull_skeleton\\.png$',
-                        '^assets/minecraft/textures/items/skull_steve\\.png$',
-                        '^assets/minecraft/textures/items/skull_wither\\.png$',
-                        '^assets/minecraft/textures/items/skull_zombie\\.png$'
+                        /^assets\/minecraft\/textures\/blocks\/leaves_acacia_opaque\.png$/,
+                        /^assets\/minecraft\/textures\/blocks\/leaves_big_oak_opaque\.png$/,
+                        /^assets\/minecraft\/textures\/blocks\/leaves_birch_opaque\.png$/,
+                        /^assets\/minecraft\/textures\/blocks\/leaves_jungle_opaque\.png$/,
+                        /^assets\/minecraft\/textures\/blocks\/leaves_oak_opaque\.png$/,
+                        /^assets\/minecraft\/textures\/blocks\/leaves_spruce_opaque\.png$/,
+                        /^assets\/minecraft\/textures\/items\/skull_creeper\.png$/,
+                        /^assets\/minecraft\/textures\/items\/skull_skeleton\.png$/,
+                        /^assets\/minecraft\/textures\/items\/skull_steve\.png$/,
+                        /^assets\/minecraft\/textures\/items\/skull_wither\.png$/,
+                        /^assets\/minecraft\/textures\/items\/skull_zombie\.png$/
                     ],
                     send: [
                         'This file may not work as intended.',
                     ]
                 },
                 {
-                    find: '^pack.mcmeta$',
+                    find: /^pack\.mcmeta$/,
                     send: [
                         'You may want to add a ton of blockstates and models.',
                         'You may want to add following files:',
@@ -172,7 +172,7 @@ export const JE17ToJE18: Conversion = {
             ]
         }),
         new SkinAdapter({
-            find: '^assets/minecraft/textures/entity/steve\\.png$'
+            find: /^assets\/minecraft\/textures\/entity\/steve\.png$/
         })
     ]
 }

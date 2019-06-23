@@ -10,7 +10,7 @@ export const JE18ToJE17: Conversion = {
             changeFormatTo: 1
         }),
         new SkinAdapter({
-            find: '^assets/minecraft/textures/entity/steve\\.png$'
+            find: /^assets\/minecraft\/textures\/entity\/steve\.png$/
         })
     ]
 }
