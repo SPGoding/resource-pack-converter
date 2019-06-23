@@ -1,6 +1,6 @@
 {
     "name": "resource-pack-converter",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "description": "A npm package that provides method to convert Minecraft: Java Edition resource packs from a version to another version.",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
