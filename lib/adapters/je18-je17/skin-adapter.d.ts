@@ -5,7 +5,7 @@ export interface SkinAdapterParams {
     /**
      * Specifies the files which this adapter should handle. Should be an Regular Expression.
      */
-    find: string;
+    find: RegExp;
 }
 export default class SkinAdapter implements Adapter {
     private readonly params;

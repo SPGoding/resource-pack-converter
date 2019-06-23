@@ -9,5 +9,5 @@ export default interface Adapter {
     /**
      * Adapts.
      */
-    execute(input: Resource, logger: Logger): Promise<Resource>;
+    execute(input: Resource, logger: Logger): Promise<Resource | Resource[]>;
 }

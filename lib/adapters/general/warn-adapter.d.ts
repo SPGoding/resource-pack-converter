@@ -1,6 +1,7 @@
 import Adapter from '../adapter';
 import { Resource } from '../../utils/utils';
 import Logger from '../../utils/logger';
+import ResourceFilter from '../../utils/resource-filter';
 export interface WarnAdapterParams {
     /**
      * Stores all warnings.
@@ -10,7 +11,11 @@ export interface WarnAdapterParams {
          * The warnings will be sent if specific files exist. Should be an
          * Regular Expression.
          */
-        find: string | string[];
+        find?: RegExp | RegExp[];
+        /**
+         * The warnings will be sent if the filter passes.
+         */
+        filter?: ResourceFilter;
         /**
          * Array of strings.
          */

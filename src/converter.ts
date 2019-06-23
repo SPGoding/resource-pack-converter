@@ -75,18 +75,34 @@ async function convertRecursively(root: string, inDir: string, options: { outDir
 
 async function convertSingleFile(resource: Resource, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
     const { outDir, adapters, logger } = options
+    let resources: Resource[] | undefined = undefined
     try {
         for (const adapter of adapters) {
-            resource = await adapter.execute(resource, logger)
+            const result = await adapter.execute(resource, logger)
+            if (result instanceof Array) {
+                resources = result
+                break
+            } else {
+                resource = result
+            }
         }
 
-        const absPath = path.join(outDir, path.dirname(resource.path))
-        if (!fs.existsSync(absPath)) {
-            fs.mkdirSync(absPath, { recursive: true })
+        if (!resources) {
+            resources = [resource]
         }
-        await fs.writeFile(path.join(outDir, resource.path), resource.content)
-        logger.info(`Created file '{outDir}/${resource.path}'.`)
 
+        for (const i of resources) {
+            if (i.path) {
+                const absPath = path.join(outDir, path.dirname(i.path))
+                if (!fs.existsSync(absPath)) {
+                    fs.mkdirSync(absPath, { recursive: true })
+                }
+                await fs.writeFile(path.join(outDir, i.path), i.content)
+                logger.info(`Created file '{outDir}/${i.path}'.`)
+            } else {
+                logger.info('Removed file.')
+            }
+        }
     } catch (ex) {
         logger.error(ex)
     }
