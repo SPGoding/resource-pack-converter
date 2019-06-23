@@ -1,6 +1,6 @@
 import Adapter from '../adapter'
 import { Resource, replaceWithRegExp } from '../../utils/utils'
-import { Logger } from '../../utils/logger'
+import Logger from '../../utils/logger'
 
 export interface WarnAdapterParams {
     /**

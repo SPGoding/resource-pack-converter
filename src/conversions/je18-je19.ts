@@ -2,6 +2,7 @@ import { Conversion } from './conversion'
 import WarnAdapter from '../adapters/general/warn-adapter'
 import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
 import PathAdapter from '../adapters/general/path-adapter'
+import ResourceFilter from '../utils/resource-filter'
 
 export const JE18ToJE19: Conversion = {
     from: 'JE1.8',
@@ -13,20 +14,20 @@ export const JE18ToJE19: Conversion = {
         new PathAdapter({
             operations: [
                 {
-                    find: '^assets/minecraft/models/block/fire_floor_main\\.json$',
-                    moveTo: 'assets/minecraft/models/block/fire_floor0.json'
+                    filter: new ResourceFilter('models', [/^minecraft:block\/fire_floor_main$/], ['json']),
+                    set: 'minecraft:block/fire_floor0'
                 },
                 {
-                    find: '^assets/minecraft/models/block/fire_u1\\.json$',
-                    moveTo: 'assets/minecraft/models/block/fire_up.json'
+                    filter: new ResourceFilter('models', [/^minecraft:block\/fire_u1$/], ['json']),
+                    set: 'minecraft:block/fire_up'
                 },
                 {
-                    find: '^assets/minecraft/models/block/fire_u2\\.json$',
-                    moveTo: 'assets/minecraft/models/block/fire_up_alt.json'
+                    filter: new ResourceFilter('models', [/^minecraft:block\/fire_u2$/], ['json']),
+                    set: 'minecraft:block/fire_up_alt'
                 },
                 {
-                    find: '^assets/minecraft/models/block/mossy_wall_post\\.json$',
-                    moveTo: 'assets/minecraft/models/block/mossy_cobblestone_wall_post.json'
+                    filter: new ResourceFilter('models', [/^minecraft:block\/mossy_wall_post$/], ['json']),
+                    set: 'minecraft:block/mossy_cobblestone_wall_post'
                 }
             ]
         }),

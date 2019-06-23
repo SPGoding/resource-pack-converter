@@ -1,7 +1,7 @@
 import Adapter from '../adapter'
 
 import { Resource, PackMcmeta } from '../../utils/utils'
-import { Logger } from '../../utils/logger'
+import Logger from '../../utils/logger'
 
 export interface PackMcmetaAdapterParams {
     /**
@@ -20,11 +20,15 @@ export default class PackMcmetaAdapter implements Adapter {
                 info: 'This resource pack is converted by resource-pack-converter',
                 github: 'https://github.com/SPGoding/resource-pack-converter'
             }
-            const oldFormat = obj.pack.pack_format
+            const oldFormat = obj.pack ? obj.pack.pack_format : undefined
             const targetFormat = this.params.changeFormatTo
             if (oldFormat !== targetFormat) {
                 logger.info(`Changed pack.pack_format from '${oldFormat}' to '${targetFormat}'.`)
-                obj.pack.pack_format = targetFormat
+                if (obj.pack) {
+                    obj.pack.pack_format = targetFormat
+                } else {
+                    obj.pack = { pack_format: targetFormat, description: '' }
+                }
             }
             input.content = Buffer.from(JSON.stringify(obj, undefined, 4), 'utf8')
             return input

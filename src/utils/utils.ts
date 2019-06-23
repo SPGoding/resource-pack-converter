@@ -42,7 +42,7 @@ export function replaceWithRegExp(target: string, source: string, regex: RegExp)
  * @param from The root.
  * @param to The specific directory.
  */
-export function getRelFromAbs(from: string, to: string): string {
+export function getRelativePath(from: string, to: string): string {
     const result = path.relative(from, to).replace(/\\/g, '/')
     if (result[0] === '/') {
         return result.slice(1)
@@ -52,37 +52,31 @@ export function getRelFromAbs(from: string, to: string): string {
 }
 
 /**
- * Get the namespaced ID from {path}.
- * @param path The path.
- * @deprecated
+ * Get the namespaced ID from an relative path.
+ * @param path The relative path.
+ * @param type The type of resource.
+ * @param ext The file extension.
  */
-export function getNamespacedID(path: string) {
-    // const parts = path.split('/')
-    // if (parts[0] === 'assets' && parts.length >= 4) {
-    //     const ext = extname(path).slice(1)
-    //     const namespace = parts[1]
-    //     const type = parts[2]
-    //     const name = parts.slice(3).join('/')
-    //     if (typeExtensionMap[type] !== ext) {
-    //         return { namespacedID: path, type: '?other' }
-    //     } else {
-    //         return { namespacedID: `${namespace}:${name}`, type }
-    //     }
-    // } else {
-    //     return { namespacedID: path, type: '?other' }
-    // }
+export function getNamespacedID(path: string, ext: string) {
+    const parts = path.split('/')
+    const namespace = parts[1]
+    const type = parts[2]
+    const name = parts.slice(3).join('/').slice(0, -ext.length - 1)
+
+    return { namespacedID: `${namespace}:${name}`, type }
 }
 
 /**
  * Get the relative path from an namespaced ID.
  * @param namespacedID The namespaced ID.
  * @param type The type of resource.
+ * @param ext The file extension.
  */
 export function getRelFromNid(namespacedID: string, type: string, ext: string) {
-    const parts = namespacedID.split(':');
+    const parts = namespacedID.split(':')
     const namespace = parts[0]
     const name = parts[1]
-    return `assets/${namespace}/${name}.${ext}`
+    return `assets/${namespace}/${type}/${name}.${ext}`
 }
 
 /**

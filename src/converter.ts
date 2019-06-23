@@ -1,8 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import Adapter from './adapters/adapter'
-import { Resource, getRelFromAbs, getNamespacedID } from './utils/utils'
-import { Logger } from './utils/logger'
+import { Resource, getRelativePath } from './utils/utils'
+import Logger from './utils/logger'
 import { Conversion } from './conversions/conversion'
 
 /**
@@ -54,7 +54,7 @@ async function convertRecursively(root: string, inDir: string, options: { outDir
 
         for (const i of directories) {
             const absInPath = path.join(inDir, i)
-            const relPath = getRelFromAbs(root, absInPath)
+            const relPath = getRelativePath(root, absInPath)
 
             if ((await fs.stat(absInPath)).isDirectory()) {
                 logger.info(`Handling directory '{inDir}/${relPath}'...`).indent()

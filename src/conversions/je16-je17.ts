@@ -2,6 +2,7 @@ import { Conversion } from './conversion'
 import WarnAdapter from '../adapters/general/warn-adapter'
 import PathAdapter from '../adapters/general/path-adapter'
 import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
+import ResourceFilter from '../utils/resource-filter'
 
 export const JE16ToJE17: Conversion = {
     from: 'JE1.6',
@@ -106,12 +107,12 @@ export const JE16ToJE17: Conversion = {
         new PathAdapter({
             operations: [
                 {
-                    find: '^assets/minecraft/textures/items/fish_cooked\\.png(\\.mcmeta)?$',
-                    moveTo: 'assets/minecraft/textures/items/fish_cod_cooked.png$1'
+                    filter: new ResourceFilter('textures', [/^minecraft:items\/fish_cooked$/], ['png', 'png.mcmeta']),
+                    set: 'minecraft:items/fish_cod_cooked'
                 },
                 {
-                    find: '^assets/minecraft/textures/items/fish_raw\\.png(\\.mcmeta)?$',
-                    moveTo: 'assets/minecraft/textures/items/fish_cod_raw.png$1'
+                    filter: new ResourceFilter('textures', [/^minecraft:items\/fish_raw$/], ['png', 'png.mcmeta']),
+                    set: 'minecraft:items/fish_cod_raw'
                 }
             ]
         })

@@ -1,5 +1,5 @@
 import * as assert from 'power-assert'
-import { replaceWithRegExp, getRelFromAbs } from '../../utils/utils'
+import { replaceWithRegExp, getRelativePath, getNamespacedID } from '../../utils/utils'
 
 describe('utils.ts Tests', () => {
     describe('replaceWithRegExp() Tests', () => {
@@ -25,9 +25,19 @@ describe('utils.ts Tests', () => {
             const root = 'resourcepacks/foo'
             const dir = 'resourcepacks/foo/assets/pack.mcmeta'
 
-            const actual = getRelFromAbs(root, dir)
+            const actual = getRelativePath(root, dir)
 
             assert.strictEqual(actual, 'assets/pack.mcmeta')
+        })
+    })
+    describe('getNamespacedID() Tests', () => {
+        it('Should handle the relative path', () => {
+            const relPath = 'assets/minecraft/textures/item/diamond_sword.png'
+            const ext = 'png'
+
+            const actual = getNamespacedID(relPath, ext)
+
+            assert.deepStrictEqual(actual, { namespacedID: 'minecraft:item/diamond_sword', type: 'textures' })
         })
     })
 })

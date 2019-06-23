@@ -1,7 +1,7 @@
 import Adapter from '../adapter'
 
 import { Resource, replaceWithRegExp } from '../../utils/utils'
-import { Logger } from '../../utils/logger'
+import Logger from '../../utils/logger'
 import { Canvas, loadImage } from 'canvas'
 
 export interface SkinAdapterParams {
