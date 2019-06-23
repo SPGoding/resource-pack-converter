@@ -3,7 +3,7 @@ import WarnAdapter from '../adapters/general/warn-adapter'
 import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
 import PathAdapter from '../adapters/general/path-adapter'
 import ResourceFilter from '../utils/resource-filter'
-import ClockAdapter from '../adapters/je18-je19/clock-adapter'
+import ClockCompassAdapter from '../adapters/je18-je19/clock-compass-adapter'
 
 export const JE18ToJE19: Conversion = {
     from: 'JE1.8',
@@ -548,7 +548,7 @@ export const JE18ToJE19: Conversion = {
                 }
             ]
         }),
-        new ClockAdapter({})
+        new ClockCompassAdapter()
     ]
 }
 
