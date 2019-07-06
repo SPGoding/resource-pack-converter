@@ -1,5 +1,5 @@
 import * as assert from 'power-assert'
-import ResourceFilter from '../../utils/resource-filter'
+import ResourceFilter from '../../utils/ResourceFilter'
 
 describe('file-filter.ts Tests', () => {
     describe('FileFilter Tests', () => {

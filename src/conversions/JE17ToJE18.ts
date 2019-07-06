@@ -1,7 +1,7 @@
-import { Conversion } from './conversion'
-import WarnAdapter from '../adapters/general/warn-adapter'
-import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
-import SkinAdapter from '../adapters/je17-je18/skin-adapter'
+import { Conversion } from './Conversion'
+import WarnAdapter from '../adapters/general/WarnAdapter'
+import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
+import SkinAdapter from '../adapters/je17-je18/SkinAdapter'
 
 export const JE17ToJE18: Conversion = {
     from: 'JE1.7',

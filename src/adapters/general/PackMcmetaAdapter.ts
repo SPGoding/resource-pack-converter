@@ -1,7 +1,8 @@
-import Adapter from '../adapter'
+import Adapter from '../Adapter'
 
-import { Resource, PackMcmeta } from '../../utils/utils'
-import Logger from '../../utils/logger'
+import { Resource } from '../../utils/Resource'
+import { PackMcmeta } from '../../utils/PackMcmeta'
+import Logger from '../../utils/Logger'
 
 export interface PackMcmetaAdapterParams {
     /**

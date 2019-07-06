@@ -1,7 +1,8 @@
-import Adapter from '../adapter'
-import { Resource, replaceWithRegExp } from '../../utils/utils'
-import Logger from '../../utils/logger'
-import ResourceFilter from '../../utils/resource-filter'
+import Adapter from '../Adapter'
+import { replaceWithRegExp } from '../../utils/utils'
+import { Resource } from '../../utils/Resource'
+import Logger from '../../utils/Logger'
+import ResourceFilter from '../../utils/ResourceFilter'
 
 export interface WarnAdapterParams {
     /**

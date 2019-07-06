@@ -1,10 +1,10 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import Adapter from './adapters/adapter'
-import { Resource, getRelativePath, getNid } from './utils/utils'
-import Logger from './utils/logger'
-import { Conversion } from './conversions/conversion'
-import { getWhole } from './wholes/whole'
+import Adapter from './adapters/Adapter'
+import { getRelativePath, getNid } from './utils/utils'
+import { Resource } from './utils/Resource'
+import Logger from './utils/Logger'
+import { Conversion } from './conversions/Conversion'
 
 /**
  * The options for converter.
@@ -36,12 +36,22 @@ export async function convert(src: string, options: ConverterOptions) {
     logger.dbug(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
 
     logger.dbug('Getting the Whole...').indent()
-    const whole = await getWhole(inDir, conversion.from)
-    await logger.dbug(`Got the Whole: '${JSON.stringify(whole)}'.`).indent(-1)
+    const whole = await getWhole(inDir)
+    await logger.dbug(`Got the Whole: ${Object.keys(whole.blockstates).length} blockstates and ${Object.keys(whole.models).length} models.`).indent(-1)
 
     try {
-        const adapters = conversion.adapters
-        logger.dbug(`Initialized ${adapters.length} adapter(s).`)
+        const adapters: Adapter[] = []
+        let [adapterCount, adapterFunctionCount] = [0, 0]
+        for (const i of conversion.adapters) {
+            if (i instanceof Adapter) {
+                adapters.push(i)
+                adapterCount += 1
+            } else {
+                adapters.push(i(whole))
+                adapterFunctionCount += 1
+            }
+        }
+        logger.dbug(`Initialized ${adapters.length} (${adapterCount}, ${adapterFunctionCount}) adapter(s).`)
 
         await convertRecursively(inDir, inDir, { outDir, adapters, logger })
         logger.info('Finished conversion.')
@@ -52,7 +62,37 @@ export async function convert(src: string, options: ConverterOptions) {
     }
 }
 
+async function getWhole(inDir: string) {
+    const recurse = async (dirPrefix: string, dir: string, ans: { blockstates: any, models: any }) => {
+        const files = await fs.readdir(dir)
+        for (const v of files) {
+            if ((await fs.stat(path.join(dir, v))).isDirectory()) {
+                await recurse(dirPrefix, path.join(dir, v), ans)
+            } else {
+                const filePath = path.join(dir, v)
+                if (path.dirname(filePath)) {
+                    const { nid, type } = getNid(
+                        path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/'),
+                        '.json'
+                    )
+                    if (path.extname(v) === '.json' && (type === 'blockstates' || type === 'models')) {
+                        const json = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
+                        ans[type][nid] = JSON.stringify({ ...json, $isReplaced: true })
+                    }
+                }
+            }
+        }
+    }
 
+    const ans = {
+        blockstates: {},
+        models: {}
+    }
+
+    await recurse(inDir, inDir, ans)
+
+    return ans
+}
 
 async function convertRecursively(root: string, inDir: string, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
     const { logger } = options

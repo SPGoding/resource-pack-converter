@@ -1,7 +1,7 @@
-import Adapter from '../adapter'
+import Adapter from '../Adapter'
 
-import { Resource } from '../../utils/utils'
-import Logger from '../../utils/logger'
+import { Resource } from '../../utils/Resource'
+import Logger from '../../utils/Logger'
 import { Canvas, loadImage } from 'canvas'
 
 export default class ClockCompassAdapter implements Adapter {

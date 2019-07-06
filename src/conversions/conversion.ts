@@ -1,10 +1,11 @@
-import Adapter from '../adapters/adapter'
+import Adapter from '../adapters/Adapter'
 import { Version } from '../utils/utils'
-import JE16ToJE17 from './je16-je17'
-import JE17ToJE16 from './je17-je16'
-import JE17ToJE18 from './je17-je18'
-import JE18ToJE17 from './je18-je17'
-import JE18ToJE19 from './je18-je19'
+import { Whole } from '../utils/Whole'
+import JE16ToJE17 from './JE16ToJE17'
+import JE17ToJE16 from './JE17ToJE16'
+import JE17ToJE18 from './JE17ToJE18'
+import JE18ToJE17 from './JE18ToJE17'
+import JE18ToJE19 from './JE18ToJE19'
 
 /**
  * All avaliable adapter classes.
@@ -26,7 +27,7 @@ export interface Conversion {
     /**
      * Contains a set of adapters.
      */
-    adapters: Adapter[],
+    adapters: (Adapter | ((whole: Whole) => Adapter))[],
     /**
      * Contains a set of adapter factories.
      */

@@ -1,5 +1,6 @@
-import Adapter from '../adapters/adapter';
+import Adapter from '../adapters/Adapter';
 import { Version } from '../utils/utils';
+import { Whole } from '../utils/Whole';
 /**
  * All avaliable adapter classes.
  */
@@ -19,5 +20,5 @@ export interface Conversion {
     /**
      * Contains a set of adapters.
      */
-    adapters: Adapter[];
+    adapters: (Adapter | ((whole: Whole) => Adapter))[];
 }

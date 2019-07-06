@@ -8,7 +8,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as minimist from 'minimist'
 import { convert } from './converter'
-import { CONVERSIONS, Conversion } from './conversions/conversion'
+import { CONVERSIONS, Conversion } from './conversions/Conversion'
 
 const argv = minimist(process.argv.slice(2), { alias: { in: 'i', out: 'o', from: 'f', to: 't' } })
 
