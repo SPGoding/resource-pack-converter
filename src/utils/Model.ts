@@ -28,6 +28,8 @@ type Display = {
     translation?: number[]
 }
 
+export type Direction = 'down' | 'up' | 'north' | 'south' | 'west' | 'east'
+
 type Element = {
     from?: number[],
     to?: number[],
@@ -39,12 +41,7 @@ type Element = {
     },
     shade?: boolean,
     faces?: {
-        down?: Face,
-        up?: Face,
-        north?: Face,
-        south?: Face,
-        west?: Face,
-        east?: Face
+        [direction in Direction]: Face
     },
     [other: string]: any
 }
@@ -52,7 +49,7 @@ type Element = {
 type Face = {
     uv?: number[],
     texture?: string,
-    cullface?: 'down' | 'up' | 'north' | 'south' | 'west' | 'east',
+    cullface?: Direction,
     rotation?: number,
     tintindex?: number
 }

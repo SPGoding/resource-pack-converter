@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import Adapter from './adapters/Adapter'
-import { getRelativePath, getNid } from './utils/utils'
+import { getRelFromAbs, getNidFromRel } from './utils/utils'
 import Resource from './utils/Resource'
 import Logger from './utils/Logger'
 import Conversion from './conversions/Conversion'
@@ -75,7 +75,7 @@ async function getWhole(inDir: string) {
             } else {
                 const filePath = path.join(dir, v)
                 if (path.dirname(filePath)) {
-                    const { nid, type } = getNid(
+                    const { nid, type } = getNidFromRel(
                         path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/'),
                         '.json'
                     )
@@ -105,7 +105,7 @@ async function convertRecursively(root: string, inDir: string, options: { outDir
 
         for (const i of directories) {
             const absInPath = path.join(inDir, i)
-            const relPath = getRelativePath(root, absInPath)
+            const relPath = getRelFromAbs(root, absInPath)
 
             if ((await fs.stat(absInPath)).isDirectory()) {
                 logger.info(`Handling directory '{inDir}/${relPath}'...`).indent()

@@ -27,7 +27,7 @@ export function replaceWithRegExp(target: string, source: string, regex: RegExp)
  * @param from The root.
  * @param to The specific directory.
  */
-export function getRelativePath(from: string, to: string): string {
+export function getRelFromAbs(from: string, to: string): string {
     const result = path.relative(from, to).replace(/\\/g, '/')
     if (result[0] === '/') {
         return result.slice(1)
@@ -41,7 +41,7 @@ export function getRelativePath(from: string, to: string): string {
  * @param path The relative path. e.g. `assets/minecraft/models/item/diamond.json`
  * @param ext The file extension. e.g. `json`.
  */
-export function getNid(path: string, ext: string) {
+export function getNidFromRel(path: string, ext: string) {
     const parts = path.split('/')
     if (parts.length >= 4) {
         const namespace = parts[1]
@@ -51,6 +51,17 @@ export function getNid(path: string, ext: string) {
     } else {
         return { nid: path, type: '?' }
     }
+}
+
+/**
+ * Standardize a namespaced ID.
+ * @param nid The namespaced ID.
+ */
+export function standardizeNid(nid: string) {
+    if (nid.indexOf(':') === -1) {
+        return `minecraft:${nid}`
+    }
+    return nid
 }
 
 /**

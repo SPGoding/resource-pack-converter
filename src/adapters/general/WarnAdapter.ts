@@ -42,7 +42,7 @@ export default class WarnAdapter extends Adapter {
                     }
                 }
             } else if (warning.filter) {
-                if (warning.filter.testPath(input.path)) {
+                if (warning.filter.testRel(input.path)) {
                     logger.warn(...warning.send)
                 }
             } else {
