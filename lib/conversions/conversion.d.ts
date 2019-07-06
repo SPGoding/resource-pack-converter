@@ -1,6 +1,6 @@
 import Adapter from '../adapters/Adapter';
+import Whole from '../utils/Whole';
 import { Version } from '../utils/utils';
-import { Whole } from '../utils/Whole';
 /**
  * All avaliable adapter classes.
  */
@@ -8,7 +8,7 @@ export declare const CONVERSIONS: Conversion[];
 /**
  * Contains a set of adapters.
  */
-export interface Conversion {
+export default interface Conversion {
     /**
      * Specifies the game version which the conversion starts from.
      */

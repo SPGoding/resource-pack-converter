@@ -1,7 +1,7 @@
 /**
  * Reprensets an resource in the resource pack.
  */
-export interface Resource {
+export default interface Resource {
     /**
      * The content of the resource.
      */

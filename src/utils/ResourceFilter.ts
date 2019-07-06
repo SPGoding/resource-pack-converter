@@ -1,6 +1,6 @@
 import { getNid, replaceWithRegExp, getRelFromNid } from './utils'
 
-export class ResourceFilter {
+export default class ResourceFilter {
     constructor(
         public readonly type: string,
         public readonly nids: RegExp[],
@@ -40,5 +40,3 @@ export class ResourceFilter {
         return ''
     }
 }
-
-export default ResourceFilter

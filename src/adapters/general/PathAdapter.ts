@@ -2,7 +2,7 @@ import Adapter from '../Adapter'
 import ResourceFilter from '../../utils/ResourceFilter'
 import Logger from '../../utils/Logger'
 import { getNid } from '../../utils/utils'
-import { Resource } from '../../utils/Resource'
+import Resource from '../../utils/Resource'
 
 export interface PathAdapterParams {
     /**

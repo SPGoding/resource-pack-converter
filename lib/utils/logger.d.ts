@@ -1,7 +1,7 @@
 /**
  * A logger.
  */
-export declare class Logger {
+export default class Logger {
     private readonly _logs;
     private _indent;
     private _log;
@@ -31,4 +31,3 @@ export declare class Logger {
      */
     toString(): string;
 }
-export default Logger;

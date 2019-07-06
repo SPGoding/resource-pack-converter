@@ -2,7 +2,7 @@ import { TextComponent } from './TextComponent'
 /**
  * Structure of `pack.mcmeta`.
  */
-export interface PackMcmeta {
+export default interface PackMcmeta {
     pack: {
         pack_format: number;
         description: TextComponent;

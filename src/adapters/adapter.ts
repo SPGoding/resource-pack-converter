@@ -1,4 +1,4 @@
-import { Resource } from '../utils/Resource'
+import Resource from '../utils/Resource'
 import Logger from '../utils/Logger'
 
 /**

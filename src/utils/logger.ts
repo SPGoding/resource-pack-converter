@@ -1,7 +1,7 @@
 /**
  * A logger.
  */
-export class Logger {
+export default class Logger {
     private readonly _logs: string[] = []
 
     private _indent: number = 0
@@ -63,5 +63,3 @@ export class Logger {
         return this._logs.join('\n')
     }
 }
-
-export default Logger

@@ -1,6 +1,6 @@
 import Adapter from '../Adapter'
 
-import { Resource } from '../../utils/Resource'
+import Resource from '../../utils/Resource'
 import Logger from '../../utils/Logger'
 import { Canvas, loadImage } from 'canvas'
 

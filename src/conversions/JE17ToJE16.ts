@@ -1,4 +1,4 @@
-import { Conversion } from './Conversion'
+import Conversion from './Conversion'
 import PathAdapter from '../adapters/general/PathAdapter'
 import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
 import ResourceFilter from '../utils/ResourceFilter'

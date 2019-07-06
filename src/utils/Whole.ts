@@ -1,13 +1,13 @@
-import { Blockstates } from './Blockstates'
-import { Model } from './Model'
+import Blockstate from './Blockstate'
+import Model from './Model'
 /**
  * Structure of the Whole.
  */
-export interface Whole {
+export default interface Whole {
     blockstates: {
-        [nid: string]: Blockstates;
+        [nid: string]: Blockstate
     }
     models: {
-        [nid: string]: Model;
+        [nid: string]: Model
     }
 }

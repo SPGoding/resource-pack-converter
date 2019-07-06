@@ -2,6 +2,8 @@
  * Structure of text components.
  */
 export type TextComponent = string | boolean | number | TextComponentObject | TextComponentObject[]
+export default TextComponent
+
 /**
  * Structure of text component objects.
  */

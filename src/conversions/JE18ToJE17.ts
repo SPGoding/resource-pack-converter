@@ -1,4 +1,4 @@
-import { Conversion } from './Conversion'
+import Conversion from './Conversion'
 import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
 import SkinAdapter from '../adapters/je18-je17/SkinAdapter'
 

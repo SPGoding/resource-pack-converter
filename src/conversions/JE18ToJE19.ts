@@ -1,10 +1,10 @@
-import { Conversion } from './Conversion'
+import Conversion from './Conversion'
 import WarnAdapter from '../adapters/general/WarnAdapter'
 import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
 import PathAdapter from '../adapters/general/PathAdapter'
 import ResourceFilter from '../utils/ResourceFilter'
 import ClockCompassAdapter from '../adapters/je18-je19/ClockCompassAdapter'
-import { Whole } from '../utils/Whole'
+import Whole from '../utils/Whole'
 
 export default {
     from: 'JE1.8',

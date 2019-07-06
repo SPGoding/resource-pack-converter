@@ -2,9 +2,9 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import Adapter from './adapters/Adapter'
 import { getRelativePath, getNid } from './utils/utils'
-import { Resource } from './utils/Resource'
+import Resource from './utils/Resource'
 import Logger from './utils/Logger'
-import { Conversion } from './conversions/Conversion'
+import Conversion from './conversions/Conversion'
 
 /**
  * The options for converter.
