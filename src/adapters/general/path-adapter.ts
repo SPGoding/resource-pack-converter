@@ -1,7 +1,7 @@
 import Adapter from '../adapter'
 import ResourceFilter from '../../utils/resource-filter'
 import Logger from '../../utils/logger'
-import { Resource, getNamespacedID } from '../../utils/utils'
+import { Resource, getNid } from '../../utils/utils'
 
 export interface PathAdapterParams {
     /**
@@ -33,7 +33,7 @@ export default class PathAdapter implements Adapter {
         }
         // Change namespaced IDs in files.
         for (const op of this.params.operations) {
-            const { type: inputType } = getNamespacedID(input.path, 'json')
+            const { type: inputType } = getNid(input.path, 'json')
             if (inputType === 'blockstates' && op.filter.type === 'models') {
 
             } else if (inputType === 'models' && (op.filter.type === 'models' || op.filter.type === 'textures')) {

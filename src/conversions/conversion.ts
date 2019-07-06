@@ -26,5 +26,9 @@ export interface Conversion {
     /**
      * Contains a set of adapters.
      */
-    adapters: Adapter[]
+    adapters: Adapter[],
+    /**
+     * Contains a set of adapter factories.
+     */
+    // adapterFactories: AdapterFactory[]
 }

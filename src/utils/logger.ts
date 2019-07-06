@@ -6,7 +6,7 @@ export class Logger {
 
     private _indent: number = 0
 
-    private _log(type: 'INFO' | 'WARN' | 'EROR' | 'PRVC', ...msg: string[]) {
+    private _log(type: 'INFO' | 'WARN' | 'EROR' | 'DBUG', ...msg: string[]) {
         const date = new Date()
         const fixTwoDigits = (number: number) => number < 10 ? `0${number}` : number.toString()
         const fixThreeDigits = (number: number) => number < 10 ? `00${number}` : number < 100 ? `0${number}` : number.toString()
@@ -49,11 +49,11 @@ export class Logger {
     }
 
     /**
-     * Log a message which may leak user's privacy.
+     * Log a debugging message.
      * @param msg The message.
      */
-    public prvc(...msg: string[]) {
-        return this._log('PRVC', ...msg)
+    public dbug(...msg: string[]) {
+        return this._log('DBUG', ...msg)
     }
 
     /**

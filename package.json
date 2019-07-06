@@ -12,6 +12,8 @@
         "release": "semantic-release",
         "test": "mocha --require espower-typescript/guess --reporter dot \"./src/test/**/*.ts\"",
         "uti:analyzer": "node uti/analyzer",
+        "uti:sorter": "node uti/sorter",
+        "uti:whole-getter": "node uti/whole-getter",
         "watch": "tsc -w"
     },
     "bin": {

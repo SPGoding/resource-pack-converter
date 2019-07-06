@@ -53,33 +53,32 @@ export function getRelativePath(from: string, to: string): string {
 
 /**
  * Get the namespaced ID from an relative path.
- * @param path The relative path.
- * @param type The type of resource.
- * @param ext The file extension.
+ * @param path The relative path. e.g. `assets/minecraft/models/item/diamond.json`
+ * @param ext The file extension. e.g. `json`.
  */
-export function getNamespacedID(path: string, ext: string) {
+export function getNid(path: string, ext: string) {
     const parts = path.split('/')
     if (parts.length >= 4) {
         const namespace = parts[1]
         const type = parts[2]
         const name = parts.slice(3).join('/').slice(0, -ext.length - 1)
-        return { namespacedID: `${namespace}:${name}`, type }
+        return { nid: `${namespace}:${name}`, type }
     } else {
-        return { namespacedID: path, type: '?' }
+        return { nid: path, type: '?' }
     }
 }
 
 /**
  * Get the relative path from an namespaced ID.
- * @param namespacedID The namespaced ID.
+ * @param nid The namespaced ID.
  * @param type The type of resource.
  * @param ext The file extension.
  */
-export function getRelFromNid(namespacedID: string, type: string, ext: string) {
-    if (namespacedID.indexOf(':') === -1) {
-        namespacedID = `minecraft:${namespacedID}`
+export function getRelFromNid(nid: string, type: string, ext: string) {
+    if (nid.indexOf(':') === -1) {
+        nid = `minecraft:${nid}`
     }
-    const parts = namespacedID.split(':')
+    const parts = nid.split(':')
     const namespace = parts[0]
     const name = parts[1]
     return `assets/${namespace}/${type}/${name}.${ext}`

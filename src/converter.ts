@@ -32,7 +32,9 @@ export async function convert(src: string, options: ConverterOptions) {
 
     logger.info('Resouce Pack Converter made by @SPGoding <SPGoding@outlook.com>.')
     logger.info('Starting conversion...')
-    logger.prvc(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
+    logger.dbug(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
+
+    logger.info('Getting the Whole...')
 
     try {
         const adapters = conversion.adapters
