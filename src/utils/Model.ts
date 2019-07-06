@@ -18,6 +18,7 @@ export default interface Model {
         fixed?: Display
     },
     elements?: Element[],
+    overrides?: Override[],
     [other: string]: any
 }
 
@@ -54,4 +55,11 @@ type Face = {
     cullface?: 'down' | 'up' | 'north' | 'south' | 'west' | 'east',
     rotation?: number,
     tintindex?: number
+}
+
+type Override = {
+    predicate?: {
+        [tag: string]: any
+    },
+    model?: string
 }
