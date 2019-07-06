@@ -25,8 +25,8 @@ export interface WarnAdapterParams {
     }[]
 }
 
-export default class WarnAdapter implements Adapter {
-    constructor(private readonly params: WarnAdapterParams) { }
+export default class WarnAdapter extends Adapter {
+    constructor(private readonly params: WarnAdapterParams) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         for (const warning of this.params.warnings) {

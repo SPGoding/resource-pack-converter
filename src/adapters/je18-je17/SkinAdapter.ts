@@ -12,8 +12,8 @@ export interface SkinAdapterParams {
     find: RegExp
 }
 
-export default class SkinAdapter implements Adapter {
-    constructor(private readonly params: SkinAdapterParams) { }
+export default class SkinAdapter extends Adapter {
+    constructor(private readonly params: SkinAdapterParams) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         const regex = this.params.find

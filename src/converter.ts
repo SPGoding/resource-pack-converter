@@ -42,16 +42,20 @@ export async function convert(src: string, options: ConverterOptions) {
     try {
         const adapters: Adapter[] = []
         let [adapterCount, adapterFunctionCount] = [0, 0]
+        logger.dbug('Initializing adapters...').indent()
         for (const i of conversion.adapters) {
             if (i instanceof Adapter) {
+                logger.dbug(`Initialized ${i.constructor.name}.`)
                 adapters.push(i)
                 adapterCount += 1
             } else {
-                adapters.push(i(whole))
+                const adapter = i(whole)
+                logger.dbug(`Constructed ${adapter.constructor.name}.`)
+                adapters.push(adapter)
                 adapterFunctionCount += 1
             }
         }
-        logger.dbug(`Initialized ${adapters.length} (${adapterCount}, ${adapterFunctionCount}) adapter(s).`)
+        logger.dbug(`Initialized ${adapters.length} (${adapterCount} + ${adapterFunctionCount}) adapter(s).`).indent(-1)
 
         await convertRecursively(inDir, inDir, { outDir, adapters, logger })
         logger.info('Finished conversion.')

@@ -20,8 +20,8 @@ export interface PathAdapterParams {
     }[]
 }
 
-export default class PathAdapter implements Adapter {
-    constructor(private readonly params: PathAdapterParams) { }
+export default class PathAdapter extends Adapter {
+    constructor(private readonly params: PathAdapterParams) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         // Move files.
@@ -38,7 +38,7 @@ export default class PathAdapter implements Adapter {
             if (inputType === 'blockstates' && op.filter.type === 'models') {
 
             } else if (inputType === 'models' && (op.filter.type === 'models' || op.filter.type === 'textures')) {
-                
+
             }
         }
         return input

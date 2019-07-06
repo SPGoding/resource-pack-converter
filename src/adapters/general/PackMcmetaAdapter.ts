@@ -11,8 +11,8 @@ export interface PackMcmetaAdapterParams {
     changeFormatTo: number
 }
 
-export default class PackMcmetaAdapter implements Adapter {
-    constructor(private readonly params: PackMcmetaAdapterParams) { }
+export default class PackMcmetaAdapter extends Adapter {
+    constructor(private readonly params: PackMcmetaAdapterParams) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (input.path === 'pack.mcmeta') {

@@ -3,7 +3,7 @@ import WarnAdapter from '../adapters/general/WarnAdapter'
 import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
 import SkinAdapter from '../adapters/je17-je18/SkinAdapter'
 
-export const JE17ToJE18: Conversion = {
+export default {
     from: 'JE1.7',
     to: 'JE1.8',
     adapters: [
@@ -174,6 +174,4 @@ export const JE17ToJE18: Conversion = {
             find: /^assets\/minecraft\/textures\/entity\/steve\.png$/
         })
     ]
-}
-
-export default JE17ToJE18
+} as Conversion

@@ -6,7 +6,7 @@ import ResourceFilter from '../utils/ResourceFilter'
 import ClockCompassAdapter from '../adapters/je18-je19/ClockCompassAdapter'
 import { Whole } from '../utils/Whole'
 
-export const JE18ToJE19: Conversion = {
+export default {
     from: 'JE1.8',
     to: 'JE1.9',
     adapters: [
@@ -408,6 +408,4 @@ export const JE18ToJE19: Conversion = {
             return new ClockCompassAdapter()
         }
     ]
-}
-
-export default JE18ToJE19
+} as Conversion
