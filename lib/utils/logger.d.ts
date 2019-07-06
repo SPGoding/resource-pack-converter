@@ -22,10 +22,10 @@ export declare class Logger {
      */
     error(...msg: string[]): this;
     /**
-     * Log a message which may leak user's privacy.
+     * Log a debugging message.
      * @param msg The message.
      */
-    prvc(...msg: string[]): this;
+    dbug(...msg: string[]): this;
     /**
      * Get all logs.
      */

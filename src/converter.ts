@@ -1,9 +1,10 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import Adapter from './adapters/adapter'
-import { Resource, getRelativePath } from './utils/utils'
+import { Resource, getRelativePath, getNid } from './utils/utils'
 import Logger from './utils/logger'
 import { Conversion } from './conversions/conversion'
+import { getWhole } from './wholes/whole'
 
 /**
  * The options for converter.
@@ -34,11 +35,13 @@ export async function convert(src: string, options: ConverterOptions) {
     logger.info('Starting conversion...')
     logger.dbug(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
 
-    logger.info('Getting the Whole...')
+    logger.dbug('Getting the Whole...').indent()
+    const whole = await getWhole(inDir, conversion.from)
+    await logger.dbug(`Got the Whole: '${JSON.stringify(whole)}'.`).indent(-1)
 
     try {
         const adapters = conversion.adapters
-        logger.info(`Initialized ${adapters.length} adapter(s).`)
+        logger.dbug(`Initialized ${adapters.length} adapter(s).`)
 
         await convertRecursively(inDir, inDir, { outDir, adapters, logger })
         logger.info('Finished conversion.')
@@ -48,6 +51,8 @@ export async function convert(src: string, options: ConverterOptions) {
         return logger
     }
 }
+
+
 
 async function convertRecursively(root: string, inDir: string, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
     const { logger } = options

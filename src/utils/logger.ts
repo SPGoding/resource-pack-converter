@@ -13,7 +13,7 @@ export class Logger {
         const time = `${fixTwoDigits(date.getHours())}:${fixTwoDigits(date.getMinutes())}:${fixTwoDigits(date.getSeconds())}:${fixThreeDigits(date.getMilliseconds())}`
         msg.forEach(v => {
             const m = `[${time}] [MAIN] [${type}] ${'  '.repeat(this._indent)}${v}`
-            console.log(m)
+            // console.log(m)
             this._logs.push(m)
         })
         return this

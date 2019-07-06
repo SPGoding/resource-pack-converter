@@ -19,7 +19,7 @@ const output = process.argv[3]
  * A script which will create a JSON file containing all blockstates and models of an resource pack.
  * Use `npm run uti:whole-getter ${inDir} ${outDir}` to get the Whole of `${inDir}`.
  * The result will be stored in `uti/whole-getter/${outDir}`.
- * e.g. `npm run uti:whole-getter uti/input/1.8/ je1.8.json`
+ * e.g. `npm run uti:whole-getter uti/input/1.8/ je1.8.ts`
  * @author SPGoding
  */
 class WholeGetter {
@@ -40,11 +40,19 @@ class WholeGetter {
             fs.mkdirSync(outputDir)
         }
 
-        fs.writeFileSync(
-            path.join(outputDir, output),
-            JSON.stringify(result),
-            { encoding: 'utf8' }
-        )
+        let content = 'export default {\n    blockstates: {\n'
+        for (const nid in result.blockstates) {
+            const value = result.blockstates[nid]
+            content += `        '${nid}': ${value},\n`
+        }
+        content += `    },\n    models: {\n`
+        for (const nid in result.models) {
+            const value = result.models[nid]
+            content += `        '${nid}': ${value},\n`
+        }
+        content += `    }\n}\n`
+
+        fs.writeFileSync(path.join(outputDir, output), content, { encoding: 'utf8' })
     }
 
     recurse(dirPrefix, dir, result) {
@@ -61,7 +69,7 @@ class WholeGetter {
                     )
                     if (path.extname(v) === '.json' && (type === 'blockstates' || type === 'models')) {
                         const json = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
-                        result[type][nid] = json
+                        result[type][nid] = JSON.stringify(json)
                     }
                 }
             }

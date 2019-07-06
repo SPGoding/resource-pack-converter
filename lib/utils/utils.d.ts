@@ -29,21 +29,20 @@ export declare function replaceWithRegExp(target: string, source: string, regex:
 export declare function getRelativePath(from: string, to: string): string;
 /**
  * Get the namespaced ID from an relative path.
- * @param path The relative path.
- * @param type The type of resource.
- * @param ext The file extension.
+ * @param path The relative path. e.g. `assets/minecraft/models/item/diamond.json`
+ * @param ext The file extension. e.g. `json`.
  */
-export declare function getNamespacedID(path: string, ext: string): {
-    namespacedID: string;
+export declare function getNid(path: string, ext: string): {
+    nid: string;
     type: string;
 };
 /**
  * Get the relative path from an namespaced ID.
- * @param namespacedID The namespaced ID.
+ * @param nid The namespaced ID.
  * @param type The type of resource.
  * @param ext The file extension.
  */
-export declare function getRelFromNid(namespacedID: string, type: string, ext: string): string;
+export declare function getRelFromNid(nid: string, type: string, ext: string): string;
 /**
  * Structure of `pack.mcmeta`.
  */
