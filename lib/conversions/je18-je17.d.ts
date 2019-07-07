@@ -1,3 +1,3 @@
-import { Conversion } from './conversion';
+import { Conversion } from './Conversion';
 export declare const JE18ToJE17: Conversion;
 export default JE18ToJE17;

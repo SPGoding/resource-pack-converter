@@ -1,5 +1,5 @@
-import Logger from './utils/logger';
-import { Conversion } from './conversions/conversion';
+import Logger from './utils/Logger';
+import Conversion from './conversions/Conversion';
 /**
  * The options for converter.
  */

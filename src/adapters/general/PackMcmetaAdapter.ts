@@ -1,7 +1,8 @@
-import Adapter from '../adapter'
+import Adapter from '../Adapter'
 
-import { Resource, PackMcmeta } from '../../utils/utils'
-import Logger from '../../utils/logger'
+import Resource from '../../utils/Resource'
+import PackMcmeta from '../../utils/PackMcmeta'
+import Logger from '../../utils/Logger'
 
 export interface PackMcmetaAdapterParams {
     /**
@@ -10,8 +11,8 @@ export interface PackMcmetaAdapterParams {
     changeFormatTo: number
 }
 
-export default class PackMcmetaAdapter implements Adapter {
-    constructor(private readonly params: PackMcmetaAdapterParams) { }
+export default class PackMcmetaAdapter extends Adapter {
+    constructor(private readonly params: PackMcmetaAdapterParams) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (input.path === 'pack.mcmeta') {

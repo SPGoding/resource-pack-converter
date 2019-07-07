@@ -1,11 +1,11 @@
-import Adapter from '../adapter'
+import Adapter from '../Adapter'
 
-import { Resource } from '../../utils/utils'
-import Logger from '../../utils/logger'
+import Resource from '../../utils/Resource'
+import Logger from '../../utils/Logger'
 import { Canvas, loadImage } from 'canvas'
 
-export default class ClockCompassAdapter implements Adapter {
-    constructor() { }
+export default class ClockCompassAdapter extends Adapter {
+    constructor(model?: string) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource | Resource[]> {
         const result = await this.handle(input, logger, 'clock')

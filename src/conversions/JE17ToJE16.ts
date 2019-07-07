@@ -1,9 +1,9 @@
-import { Conversion } from './conversion'
-import PathAdapter from '../adapters/general/path-adapter'
-import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
-import ResourceFilter from '../utils/resource-filter'
+import Conversion from './Conversion'
+import PathAdapter from '../adapters/general/PathAdapter'
+import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
+import ResourceFilter from '../utils/ResourceFilter'
 
-export const JE17ToJE16: Conversion = {
+export default {
     from: 'JE1.7',
     to: 'JE1.6',
     adapters: [
@@ -23,6 +23,4 @@ export const JE17ToJE16: Conversion = {
             ]
         })
     ]
-}
-
-export default JE17ToJE16
+} as Conversion

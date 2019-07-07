@@ -1,11 +1,12 @@
-import { Conversion } from './conversion'
-import WarnAdapter from '../adapters/general/warn-adapter'
-import PackMcmetaAdapter from '../adapters/general/pack-mcmeta-adapter'
-import PathAdapter from '../adapters/general/path-adapter'
-import ResourceFilter from '../utils/resource-filter'
-import ClockCompassAdapter from '../adapters/je18-je19/clock-compass-adapter'
+import Conversion from './Conversion'
+import WarnAdapter from '../adapters/general/WarnAdapter'
+import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
+import PathAdapter from '../adapters/general/PathAdapter'
+import ResourceFilter from '../utils/ResourceFilter'
+import ClockCompassAdapter from '../adapters/je18-je19/ClockCompassAdapter'
+import Whole from '../utils/Whole'
 
-export const JE18ToJE19: Conversion = {
+export default {
     from: 'JE1.8',
     to: 'JE1.9',
     adapters: [
@@ -403,8 +404,8 @@ export const JE18ToJE19: Conversion = {
                 }
             ]
         }),
-        new ClockCompassAdapter()
+        (whole: Whole) => {
+            return new ClockCompassAdapter()
+        }
     ]
-}
-
-export default JE18ToJE19
+} as Conversion

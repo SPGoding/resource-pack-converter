@@ -1,17 +1,3 @@
-/// <reference types="node" />
-/**
- * Reprensets an resource in the resource pack.
- */
-export interface Resource {
-    /**
-     * The content of the resource.
-     */
-    content: Buffer;
-    /**
-     * The relative path navigated from the root of a resource pack.
-     */
-    path: string;
-}
 /**
  * A game version which the resource pack is compatible with.
  */
@@ -26,79 +12,25 @@ export declare function replaceWithRegExp(target: string, source: string, regex:
  * @param from The root.
  * @param to The specific directory.
  */
-export declare function getRelativePath(from: string, to: string): string;
+export declare function getRelFromAbs(from: string, to: string): string;
 /**
  * Get the namespaced ID from an relative path.
- * @param path The relative path.
- * @param type The type of resource.
- * @param ext The file extension.
+ * @param path The relative path. e.g. `assets/minecraft/models/item/diamond.json`
+ * @param ext The file extension. e.g. `json`.
  */
-export declare function getNamespacedID(path: string, ext: string): {
-    namespacedID: string;
+export declare function getNidFromRel(path: string, ext: string): {
+    nid: string;
     type: string;
 };
 /**
+ * Standardize a namespaced ID.
+ * @param nid The namespaced ID.
+ */
+export declare function standardizeNid(nid: string): string;
+/**
  * Get the relative path from an namespaced ID.
- * @param namespacedID The namespaced ID.
+ * @param nid The namespaced ID.
  * @param type The type of resource.
  * @param ext The file extension.
  */
-export declare function getRelFromNid(namespacedID: string, type: string, ext: string): string;
-/**
- * Structure of `pack.mcmeta`.
- */
-export interface PackMcmeta {
-    pack: {
-        pack_format: number;
-        description: TextComponent;
-    };
-    language?: {
-        [code: string]: {
-            name?: string;
-            region?: string;
-            bidirectional?: boolean;
-        };
-    };
-    [key: string]: any;
-}
-/**
- * Structure of text components.
- */
-export declare type TextComponent = string | boolean | number | TextComponentObject | TextComponentObject[];
-/**
- * Structure of text component objects.
- */
-interface TextComponentObject {
-    text?: string;
-    translate?: string;
-    score?: {
-        name?: string;
-        objective?: string;
-        value?: string;
-    };
-    selector?: string;
-    keybind?: string;
-    nbt?: string;
-    with?: TextComponent[];
-    interpret?: boolean;
-    block?: string;
-    entity?: string;
-    color?: string;
-    bold?: boolean;
-    italic?: boolean;
-    underlined?: boolean;
-    strikethrough?: boolean;
-    obfuscated?: boolean;
-    insertion?: string;
-    clickEvent?: {
-        action?: 'open_url' | 'open_file' | 'run_command' | 'change_page' | 'suggest_command';
-        value?: string;
-    };
-    hoverEvent?: {
-        action?: 'show_text' | 'show_item' | 'show_entity';
-        value?: string | TextComponent;
-    };
-    extra?: TextComponentObject | TextComponentObject[];
-    [key: string]: any;
-}
-export {};
+export declare function getRelFromNid(nid: string, type: string, ext: string): string;

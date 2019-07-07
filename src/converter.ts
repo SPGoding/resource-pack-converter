@@ -1,9 +1,10 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import Adapter from './adapters/adapter'
-import { Resource, getRelativePath } from './utils/utils'
-import Logger from './utils/logger'
-import { Conversion } from './conversions/conversion'
+import Adapter from './adapters/Adapter'
+import { getRelFromAbs, getNidFromRel } from './utils/utils'
+import Resource from './utils/Resource'
+import Logger from './utils/Logger'
+import Conversion from './conversions/Conversion'
 
 /**
  * The options for converter.
@@ -32,11 +33,29 @@ export async function convert(src: string, options: ConverterOptions) {
 
     logger.info('Resouce Pack Converter made by @SPGoding <SPGoding@outlook.com>.')
     logger.info('Starting conversion...')
-    logger.prvc(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
+    logger.dbug(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
+
+    logger.dbug('Getting the Whole...').indent()
+    const whole = await getWhole(inDir)
+    await logger.dbug(`Got the Whole: ${Object.keys(whole.blockstates).length} blockstates and ${Object.keys(whole.models).length} models.`).indent(-1)
 
     try {
-        const adapters = conversion.adapters
-        logger.info(`Initialized ${adapters.length} adapter(s).`)
+        const adapters: Adapter[] = []
+        let [adapterCount, adapterFunctionCount] = [0, 0]
+        logger.dbug('Initializing adapters...').indent()
+        for (const i of conversion.adapters) {
+            if (i instanceof Adapter) {
+                logger.dbug(`Initialized ${i.constructor.name}.`)
+                adapters.push(i)
+                adapterCount += 1
+            } else {
+                const adapter = i(whole)
+                logger.dbug(`Constructed ${adapter.constructor.name}.`)
+                adapters.push(adapter)
+                adapterFunctionCount += 1
+            }
+        }
+        logger.dbug(`Initialized ${adapters.length} (${adapterCount} + ${adapterFunctionCount}) adapter(s).`).indent(-1)
 
         await convertRecursively(inDir, inDir, { outDir, adapters, logger })
         logger.info('Finished conversion.')
@@ -47,6 +66,38 @@ export async function convert(src: string, options: ConverterOptions) {
     }
 }
 
+async function getWhole(inDir: string) {
+    const recurse = async (dirPrefix: string, dir: string, ans: { blockstates: any, models: any }) => {
+        const files = await fs.readdir(dir)
+        for (const v of files) {
+            if ((await fs.stat(path.join(dir, v))).isDirectory()) {
+                await recurse(dirPrefix, path.join(dir, v), ans)
+            } else {
+                const filePath = path.join(dir, v)
+                if (path.dirname(filePath)) {
+                    const { nid, type } = getNidFromRel(
+                        path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/'),
+                        '.json'
+                    )
+                    if (path.extname(v) === '.json' && (type === 'blockstates' || type === 'models')) {
+                        const json = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
+                        ans[type][nid] = JSON.stringify({ ...json, $isReplaced: true })
+                    }
+                }
+            }
+        }
+    }
+
+    const ans = {
+        blockstates: {},
+        models: {}
+    }
+
+    await recurse(inDir, inDir, ans)
+
+    return ans
+}
+
 async function convertRecursively(root: string, inDir: string, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
     const { logger } = options
     try {
@@ -54,7 +105,7 @@ async function convertRecursively(root: string, inDir: string, options: { outDir
 
         for (const i of directories) {
             const absInPath = path.join(inDir, i)
-            const relPath = getRelativePath(root, absInPath)
+            const relPath = getRelFromAbs(root, absInPath)
 
             if ((await fs.stat(absInPath)).isDirectory()) {
                 logger.info(`Handling directory '{inDir}/${relPath}'...`).indent()

@@ -1,7 +1,8 @@
-import Adapter from '../adapter'
+import Adapter from '../Adapter'
 
-import { Resource, replaceWithRegExp } from '../../utils/utils'
-import Logger from '../../utils/logger'
+import { replaceWithRegExp } from '../../utils/utils'
+import Resource from '../../utils/Resource'
+import Logger from '../../utils/Logger'
 import { Canvas, loadImage } from 'canvas'
 
 export interface SkinAdapterParams {
@@ -11,8 +12,8 @@ export interface SkinAdapterParams {
     find: RegExp
 }
 
-export default class SkinAdapter implements Adapter {
-    constructor(private readonly params: SkinAdapterParams) { }
+export default class SkinAdapter extends Adapter {
+    constructor(private readonly params: SkinAdapterParams) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         const regex = this.params.find

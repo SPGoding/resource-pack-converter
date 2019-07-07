@@ -1,7 +1,8 @@
-import Adapter from '../adapter'
-import { Resource, replaceWithRegExp } from '../../utils/utils'
-import Logger from '../../utils/logger'
-import ResourceFilter from '../../utils/resource-filter';
+import Adapter from '../Adapter'
+import Resource from '../../utils/Resource'
+import Logger from '../../utils/Logger'
+import ResourceFilter from '../../utils/ResourceFilter'
+import { replaceWithRegExp } from '../../utils/utils'
 
 export interface WarnAdapterParams {
     /**
@@ -24,8 +25,8 @@ export interface WarnAdapterParams {
     }[]
 }
 
-export default class WarnAdapter implements Adapter {
-    constructor(private readonly params: WarnAdapterParams) { }
+export default class WarnAdapter extends Adapter {
+    constructor(private readonly params: WarnAdapterParams) { super() }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         for (const warning of this.params.warnings) {
@@ -41,7 +42,7 @@ export default class WarnAdapter implements Adapter {
                     }
                 }
             } else if (warning.filter) {
-                if (warning.filter.testPath(input.path)) {
+                if (warning.filter.testRel(input.path)) {
                     logger.warn(...warning.send)
                 }
             } else {
