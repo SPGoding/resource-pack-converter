@@ -49,10 +49,16 @@ export async function convert(src: string, options: ConverterOptions) {
                 adapters.push(i)
                 adapterCount += 1
             } else {
-                const adapter = i(whole)
-                logger.dbug(`Constructed ${adapter.constructor.name}.`)
-                adapters.push(adapter)
-                adapterFunctionCount += 1
+                const result = i(whole)
+                if (result instanceof Array) {
+                    adapters.push(...result)
+                    adapterFunctionCount += result.length
+                    result.forEach(v => void logger.dbug(`Constructed ${v.constructor.name}.`))
+                } else {
+                    adapters.push(result)
+                    adapterFunctionCount += 1
+                    logger.dbug(`Constructed ${result.constructor.name}.`)
+                }
             }
         }
         logger.dbug(`Initialized ${adapters.length} (${adapterCount} + ${adapterFunctionCount}) adapter(s).`).indent(-1)
@@ -138,9 +144,7 @@ async function convertSingleFile(resource: Resource, options: { outDir: string, 
             }
         }
 
-        if (!resources) {
-            resources = [resource]
-        }
+        resources = resources || [resource]
 
         for (const i of resources) {
             if (i.path) {

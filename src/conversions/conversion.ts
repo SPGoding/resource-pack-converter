@@ -10,7 +10,7 @@ import { Version } from '../utils/utils'
 /**
  * All avaliable adapter classes.
  */
-export const CONVERSIONS: Conversion[] = [JE16ToJE17, JE17ToJE16, JE17ToJE18, JE18ToJE17, JE18ToJE19]
+export const Convertions: Conversion[] = [JE16ToJE17, JE17ToJE16, JE17ToJE18, JE18ToJE17, JE18ToJE19]
 
 /**
  * Contains a set of adapters.
@@ -27,7 +27,7 @@ export default interface Conversion {
     /**
      * Contains a set of adapters.
      */
-    adapters: (Adapter | ((whole: Whole) => Adapter))[],
+    adapters: (Adapter | ((whole: Whole) => (Adapter | Adapter[])))[],
     /**
      * Contains a set of adapter factories.
      */

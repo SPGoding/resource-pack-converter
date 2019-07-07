@@ -4,7 +4,7 @@ import { Version } from '../utils/utils';
 /**
  * All avaliable adapter classes.
  */
-export declare const CONVERSIONS: Conversion[];
+export declare const Convertions: Conversion[];
 /**
  * Contains a set of adapters.
  */
@@ -20,5 +20,5 @@ export default interface Conversion {
     /**
      * Contains a set of adapters.
      */
-    adapters: (Adapter | ((whole: Whole) => Adapter))[];
+    adapters: (Adapter | ((whole: Whole) => (Adapter | Adapter[])))[];
 }

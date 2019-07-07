@@ -9,7 +9,7 @@ import * as path from 'path'
 import * as minimist from 'minimist'
 import Conversion from './conversions/Conversion'
 import { convert } from './converter'
-import { CONVERSIONS } from './conversions/Conversion'
+import { Convertions } from './conversions/Conversion'
 
 const argv = minimist(process.argv.slice(2), { alias: { in: 'i', out: 'o', from: 'f', to: 't' } })
 
@@ -24,7 +24,7 @@ try {
         }
         // Preparation.
         let conversion: Conversion | undefined = undefined
-        for (const i of CONVERSIONS) {
+        for (const i of Convertions) {
             if (i.from === argv.from && i.to === argv.to) {
                 conversion = i
             }
