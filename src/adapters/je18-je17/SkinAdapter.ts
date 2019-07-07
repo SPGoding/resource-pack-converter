@@ -17,14 +17,14 @@ export default class SkinAdapter extends Adapter {
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (this.params.filter.testLoc(input.loc)) {
-            const img = input.interpreted =
-                input.interpreted || await loadImage(input.buffer)
+            const img = input.value =
+                input.value || await loadImage(input.buffer)
             const length = img.width
             const canvas = new Canvas(length, length / 2)
             const ctx = canvas.getContext('2d')
             ctx.drawImage(img, 0, 0)
             input.buffer = canvas.toBuffer('image/png')
-            delete input.interpreted
+            delete input.value
 
             logger.info('Removed second layer for skin.')
             return input

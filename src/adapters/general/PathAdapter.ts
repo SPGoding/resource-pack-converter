@@ -35,11 +35,11 @@ export default class PathAdapter extends Adapter {
         // Change namespaced IDs in files.
         for (const op of this.params.operations) {
             if (input.loc.type === 'blockstates' && op.filter.type === 'models') {
-                input.interpreted = input.interpreted || JSON.parse(input.buffer.toString('utf8'))
-                changeNidInBlockstate(input.interpreted, op.filter, op.set, logger)
+                input.value = input.value || JSON.parse(input.buffer.toString('utf8'))
+                changeNidInBlockstate(input.value, op.filter, op.set, logger)
             } else if (input.loc.type === 'models' && (op.filter.type === 'models' || op.filter.type === 'textures')) {
-                input.interpreted = input.interpreted || JSON.parse(input.buffer.toString('utf8'))
-                changeNidInModel(input.interpreted, op.filter, op.set, logger)
+                input.value = input.value || JSON.parse(input.buffer.toString('utf8'))
+                changeNidInModel(input.value, op.filter, op.set, logger)
             }
         }
         return input

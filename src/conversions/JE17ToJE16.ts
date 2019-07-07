@@ -13,11 +13,11 @@ export default {
         new PathAdapter({
             operations: [
                 {
-                    filter: new ResourceFilter('textures', [/^minecraft:items\/fish_cod_cooked$/], ['png', 'png.mcmeta']),
+                    filter: new ResourceFilter('textures', 'minecraft:items/fish_cod_cooked', ['png', 'png.mcmeta']),
                     set: 'minecraft:items/fish_cooked'
                 },
                 {
-                    filter: new ResourceFilter('textures', [/^minecraft:items\/fish_cod_raw$/], ['png', 'png.mcmeta']),
+                    filter: new ResourceFilter('textures', 'minecraft:items/fish_cod_raw', ['png', 'png.mcmeta']),
                     set: 'minecraft:items/fish_raw'
                 }
             ]

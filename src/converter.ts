@@ -69,7 +69,7 @@ async function getWhole(inDir: string, logger: Logger) {
                 const buffer = await fs.readFile(filePath)
                 let category = ans[type]
                 category = category || {}
-                category[nid] = { buffer, ext: ext }
+                category[nid] = { buffer, ext }
                 logger.dbug(`Added '${type} | ${ext} | ${nid}'.`)
             }
         }
@@ -118,7 +118,7 @@ async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
                     const ele = category[nid]
                     let resource: Resource = {
                         buffer: ele.buffer,
-                        interpreted: ele.value,
+                        value: ele.value,
                         loc: {
                             nid,
                             type,
@@ -140,7 +140,7 @@ async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
                     for (const i of resources) {
                         whole[resource.loc.type][resource.loc.nid] = {
                             buffer: i.buffer,
-                            value: i.interpreted,
+                            value: i.value,
                             ext: i.loc.ext
                         }
                     }

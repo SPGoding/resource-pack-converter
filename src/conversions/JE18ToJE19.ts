@@ -1,3 +1,5 @@
+import { standardizeNid } from '../utils/utils'
+import { loadImage } from 'canvas'
 import Conversion from './Conversion'
 import PathAdapter from '../adapters/general/PathAdapter'
 import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
@@ -5,7 +7,6 @@ import ResourceFilter from '../utils/ResourceFilter'
 import SplitAdapter from '../adapters/je18-je19/SplitAdapter'
 import WarnAdapter from '../adapters/general/WarnAdapter'
 import Whole from '../utils/Whole'
-import { standardizeNid, getRelFromNid } from '../utils/utils'
 import Model from '../utils/Model'
 
 export default {
@@ -18,19 +19,19 @@ export default {
         new PathAdapter({
             operations: [
                 {
-                    filter: new ResourceFilter('models', [/^minecraft:block\/fire_floor_main$/], ['json']),
+                    filter: new ResourceFilter('models', 'minecraft:block/fire_floor_main', ['json']),
                     set: 'minecraft:block/fire_floor0'
                 },
                 {
-                    filter: new ResourceFilter('models', [/^minecraft:block\/fire_u1$/], ['json']),
+                    filter: new ResourceFilter('models', 'minecraft:block/fire_u1', ['json']),
                     set: 'minecraft:block/fire_up'
                 },
                 {
-                    filter: new ResourceFilter('models', [/^minecraft:block\/fire_u2$/], ['json']),
+                    filter: new ResourceFilter('models', 'minecraft:block/fire_u2', ['json']),
                     set: 'minecraft:block/fire_up_alt'
                 },
                 {
-                    filter: new ResourceFilter('models', [/^minecraft:block\/mossy_wall_post$/], ['json']),
+                    filter: new ResourceFilter('models', 'minecraft:block/mossy_wall_post', ['json']),
                     set: 'minecraft:block/mossy_cobblestone_wall_post'
                 }
             ]
@@ -425,8 +426,9 @@ export default {
     ]
 } as Conversion
 
-function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expectedParent: string, textureNid: string) {
+async function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expectedParent: string, textureNid: string) {
     const resource = whole.models[modelNid]
+    let count = 1
     if (resource) {
         resource.value = resource.value || JSON.parse(resource.buffer.toString('utf8'))
         const model = <Model>resource.value
@@ -434,7 +436,12 @@ function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expectedPa
         if (model.textures && model.textures.layer0 &&
             model.parent && standardizeNid(model.parent) === expectedParent) {
             // This model is valid.
-            textureNid = model.textures.layer0
+            textureNid = standardizeNid(model.textures.layer0)
+            const img = whole.textures[textureNid].value =
+                whole.textures[textureNid].value || await loadImage(whole.textures[textureNid].buffer)
+            if (img) {
+                count = img.height / img.width
+            }
         } else {
             // This model is invalid.
             return [
@@ -465,8 +472,10 @@ function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expectedPa
         }),
         new SplitAdapter(
             {
-                modelRel: getRelFromNid(modelNid, 'models', 'json'),
-                textureRel: getRelFromNid(textureNid, 'textures', 'png')
+                modelFilter: new ResourceFilter('models', modelNid, ['json']),
+                textureFilter: new ResourceFilter('models', textureNid, ['json']),
+                textureNidPrefix: textureNid,
+                count
             }
         )
     ]

@@ -11,7 +11,7 @@ export default {
             changeFormatTo: 1
         }),
         new SkinAdapter({
-            filter: new ResourceFilter('textures', [/^minecraft:entity\/steve$/], ['png'])
+            filter: new ResourceFilter('textures', 'minecraft:entity/steve', ['png'])
         })
     ]
 } as Conversion

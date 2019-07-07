@@ -9,14 +9,14 @@ export type Location = {
  */
 export default interface Resource {
     /**
-     * If `interpreted` exists, never read `buffer`.
+     * If `value` exists, never read `buffer`.
      * @see interpreted
      */
     buffer: Buffer,
     /**
-     * If `interpreted` exists, never read `buffer`.
+     * If `value` exists, never read `buffer`.
      * @see buffer
      */
-    interpreted?: any,
+    value?: any,
     loc: Location
 }

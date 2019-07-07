@@ -3,27 +3,33 @@ import ResourceFilter from '../../utils/ResourceFilter'
 
 describe('file-filter.ts Tests', () => {
     describe('FileFilter Tests', () => {
-        describe('testRel() Tests', () => {
-            it('Should return true when matches', () => {
-                const ff = new ResourceFilter('textures', [/^minecraft:items\/diamond_sword$/], ['png', 'png.mcmeta'])
-                const path = 'assets/minecraft/textures/items/diamond_sword.png.mcmeta'
+        describe('testNid() Tests', () => {
+            it('Should return true when I specify single regex', () => {
+                const ff = new ResourceFilter('textures', /^minecraft:items\/diamond_sword$/, ['png', 'png.mcmeta'])
+                const nid = 'minecraft:items/diamond_sword'
 
-                const actual = ff.testRel(path)
+                const actual = ff.testNid(nid)
 
                 assert.strictEqual(actual, true)
             })
-            it("Should return false when doesn't match", () => {
-                const ff = new ResourceFilter('textures', [/^minecraft:items\/diamond_sword$/], ['png', 'png.mcmeta'])
-                const path = 'assets/minecraft/models/items/diamond_sword.json'
+            it('Should return true when I specify single string', () => {
+                const ff = new ResourceFilter('textures', 'minecraft:items/diamond_sword', ['png', 'png.mcmeta'])
+                const nid = 'minecraft:items/diamond_sword'
 
-                const actual = ff.testRel(path)
+                const actual = ff.testNid(nid)
 
-                assert.strictEqual(actual, false)
+                assert.strictEqual(actual, true)
             })
-        })
-        describe('testNid() Tests', () => {
-            it('Should return true when matches', () => {
+            it('Should return true when I specify regex array', () => {
                 const ff = new ResourceFilter('textures', [/^minecraft:items\/diamond_sword$/], ['png', 'png.mcmeta'])
+                const nid = 'minecraft:items/diamond_sword'
+
+                const actual = ff.testNid(nid)
+
+                assert.strictEqual(actual, true)
+            })
+            it('Should return true when I specify string array', () => {
+                const ff = new ResourceFilter('textures', ['minecraft:items/diamond_sword'], ['png', 'png.mcmeta'])
                 const nid = 'minecraft:items/diamond_sword'
 
                 const actual = ff.testNid(nid)
@@ -47,20 +53,28 @@ describe('file-filter.ts Tests', () => {
                 assert.strictEqual(actual, false)
             })
         })
-        describe('getTargetRel() Tests', () => {
+        describe('getTargetNid() Tests', () => {
             it('Should replace placeholders', () => {
                 const ff = new ResourceFilter('textures', [/^minecraft:items\/(\w+)$/], ['png', 'png.mcmeta'])
-                const path = 'assets/minecraft/textures/items/diamond_sword.png.mcmeta'
+                const nid = 'minecraft:items/diamond_sword'
 
-                const actual = ff.getTargetRel(path, 'minecraft:item/$1')
+                const actual = ff.getTargetNid({
+                    nid,
+                    type: 'textures',
+                    ext: 'png.mcmeta'
+                }, 'minecraft:item/$1')
 
-                assert.strictEqual(actual, 'assets/minecraft/textures/item/diamond_sword.png.mcmeta')
+                assert.strictEqual(actual, 'minecraft:item/diamond_sword')
             })
-            it('Should return empty string', () => {
+            it('Should replace placeholders', () => {
                 const ff = new ResourceFilter('textures', [/^minecraft:items\/(\w+)$/], ['png', 'png.mcmeta'])
-                const path = 'assets/minecraft/models/items/diamond_sword.json'
+                const nid = 'minecraft:item/diamond_sword'
 
-                const actual = ff.getTargetRel(path, 'minecraft:item/$1')
+                const actual = ff.getTargetNid({
+                    nid,
+                    type: 'textures',
+                    ext: 'png.mcmeta'
+                }, 'minecraft:item/$1')
 
                 assert.strictEqual(actual, '')
             })

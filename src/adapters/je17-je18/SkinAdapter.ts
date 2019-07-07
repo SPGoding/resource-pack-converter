@@ -18,8 +18,8 @@ export default class SkinAdapter extends Adapter {
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (this.params.filter.testLoc(input.loc)) {
-            const img = input.interpreted =
-                input.interpreted || await loadImage(input.buffer)
+            const img = input.value =
+                input.value || await loadImage(input.buffer)
             const length = img.width
             const canvas = new Canvas(length, length)
             const slength = length / 4
@@ -35,7 +35,7 @@ export default class SkinAdapter extends Adapter {
             ctx.drawImage(img, sx1, sy1, slength, slength, x1, y, slength, slength)
             ctx.drawImage(img, sx2, sy2, slength, slength, x2, y, slength, slength)
             input.buffer = canvas.toBuffer('image/png')
-            delete input.interpreted
+            delete input.value
 
             logger.info('Added second layer for skin.')
             return input

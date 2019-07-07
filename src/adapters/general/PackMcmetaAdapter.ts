@@ -16,8 +16,8 @@ export default class PackMcmetaAdapter extends Adapter {
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (input.loc.type === '?' && input.loc.nid === 'pack.mcmeta') {
-            input.interpreted = input.interpreted || JSON.parse(input.buffer.toString('utf8'))
-            const obj: PackMcmeta = input.interpreted
+            input.value = input.value || JSON.parse(input.buffer.toString('utf8'))
+            const obj: PackMcmeta = input.value
             obj['$resource-pack-converter'] = {
                 info: 'This resource pack is converted by resource-pack-converter',
                 github: 'https://github.com/SPGoding/resource-pack-converter'
