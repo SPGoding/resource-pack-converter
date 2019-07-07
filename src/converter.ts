@@ -5,6 +5,7 @@ import { getRelFromAbs, getNidFromRel } from './utils/utils'
 import Resource from './utils/Resource'
 import Logger from './utils/Logger'
 import Conversion from './conversions/Conversion'
+import Whole from './utils/Whole'
 
 /**
  * The options for converter.
@@ -29,41 +30,21 @@ export async function convert(src: string, options: ConverterOptions) {
     const inDir = path.resolve(src)
     const outDir = path.resolve(options.outDir)
     const logger = new Logger()
-    const conversion = options.conversion
-
-    logger.info('Resouce Pack Converter made by @SPGoding <SPGoding@outlook.com>.')
-    logger.info('Starting conversion...')
-    logger.dbug(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
-
-    logger.dbug('Getting the Whole...').indent()
-    const whole = await getWhole(inDir)
-    await logger.dbug(`Got the Whole: ${Object.keys(whole.blockstates).length} blockstates and ${Object.keys(whole.models).length} models.`).indent(-1)
 
     try {
-        const adapters: Adapter[] = []
-        let [adapterCount, adapterFunctionCount] = [0, 0]
-        logger.dbug('Initializing adapters...').indent()
-        for (const i of conversion.adapters) {
-            if (i instanceof Adapter) {
-                logger.dbug(`Initialized ${i.constructor.name}.`)
-                adapters.push(i)
-                adapterCount += 1
-            } else {
-                const result = i(whole)
-                if (result instanceof Array) {
-                    adapters.push(...result)
-                    adapterFunctionCount += result.length
-                    result.forEach(v => void logger.dbug(`Constructed ${v.constructor.name}.`))
-                } else {
-                    adapters.push(result)
-                    adapterFunctionCount += 1
-                    logger.dbug(`Constructed ${result.constructor.name}.`)
-                }
-            }
-        }
-        logger.dbug(`Initialized ${adapters.length} (${adapterCount} + ${adapterFunctionCount}) adapter(s).`).indent(-1)
+        logger.info('Resouce Pack Converter made by @SPGoding <SPGoding@outlook.com>.')
+        logger.dbug(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
 
-        await convertRecursively(inDir, inDir, { outDir, adapters, logger })
+        logger.dbug('Getting the Whole...').indent()
+        const whole = await getWhole(inDir, logger)
+        await logger.dbug('Got the Whole.').indent(-1)
+
+        logger.dbug('Initializing adapters...').indent()
+        const adapters = getAdapters(whole, options.conversion, logger)
+        logger.dbug(`Initialized ${adapters.length} adapter(s).`).indent(-1)
+
+        logger.info('Starting conversion...')
+        await convertWhole(whole, adapters, logger)
         logger.info('Finished conversion.')
     } catch (ex) {
         logger.error(ex)
@@ -72,31 +53,35 @@ export async function convert(src: string, options: ConverterOptions) {
     }
 }
 
-async function getWhole(inDir: string) {
-    const recurse = async (dirPrefix: string, dir: string, ans: { blockstates: any, models: any }) => {
+async function getWhole(inDir: string, logger: Logger) {
+    const recurse = async (dirPrefix: string, dir: string, ans: Whole) => {
         const files = await fs.readdir(dir)
         for (const v of files) {
             if ((await fs.stat(path.join(dir, v))).isDirectory()) {
                 await recurse(dirPrefix, path.join(dir, v), ans)
             } else {
                 const filePath = path.join(dir, v)
-                if (path.dirname(filePath)) {
-                    const { nid, type } = getNidFromRel(
-                        path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/'),
-                        '.json'
-                    )
-                    if (path.extname(v) === '.json' && (type === 'blockstates' || type === 'models')) {
-                        const json = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
-                        ans[type][nid] = JSON.stringify({ ...json, $isReplaced: true })
-                    }
-                }
+                const extension = path.extname(filePath).slice(1)
+                const { nid, type } = getNidFromRel(
+                    path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/'),
+                    extension
+                )
+                const buffer = await fs.readFile(filePath)
+                let category = ans[type]
+                category = category || {}
+                category[nid] = { buffer, extension }
+                logger.dbug(`Added '${nid}' with extension '${extension}' to 'Whole.${type}'.`)
             }
         }
     }
 
-    const ans = {
+    const ans: Whole = {
         blockstates: {},
-        models: {}
+        lang: {},
+        models: {},
+        texts: {},
+        textures: {},
+        '?': {}
     }
 
     await recurse(inDir, inDir, ans)
@@ -104,62 +89,65 @@ async function getWhole(inDir: string) {
     return ans
 }
 
-async function convertRecursively(root: string, inDir: string, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
-    const { logger } = options
-    try {
-        const directories = await fs.readdir(inDir)
-
-        for (const i of directories) {
-            const absInPath = path.join(inDir, i)
-            const relPath = getRelFromAbs(root, absInPath)
-
-            if ((await fs.stat(absInPath)).isDirectory()) {
-                logger.info(`Handling directory '{inDir}/${relPath}'...`).indent()
-                await convertRecursively(root, absInPath, options)
-                logger.indent(-1)
+function getAdapters(whole: Whole, conversion: Conversion, logger: Logger) {
+    const ans = []
+    for (const i of conversion.adapters) {
+        if (i instanceof Adapter) {
+            logger.dbug(`Initialized ${i.constructor.name}.`)
+            ans.push(i)
+        } else {
+            const result = i(whole)
+            if (result instanceof Array) {
+                ans.push(...result)
+                result.forEach(v => void logger.dbug(`Constructed ${v.constructor.name}.`))
             } else {
-                logger.info(`Handling file '{inDir}/${relPath}'...`).indent()
-                const content = await fs.readFile(absInPath)
-                const resource = { content, path: relPath }
-                await convertSingleFile(resource, options)
-                logger.indent(-1)
+                ans.push(result)
+                logger.dbug(`Constructed ${result.constructor.name}.`)
             }
         }
-    } catch (ex) {
-        logger.error(ex)
     }
+    return ans
 }
 
-async function convertSingleFile(resource: Resource, options: { outDir: string, adapters: Adapter[], logger: Logger }) {
-    const { outDir, adapters, logger } = options
-    let resources: Resource[] | undefined = undefined
-    try {
-        for (const adapter of adapters) {
-            const result = await adapter.execute(resource, logger)
-            if (result instanceof Array) {
-                resources = result
-                break
-            } else {
-                resource = result
-            }
-        }
-
-        resources = resources || [resource]
-
-        for (const i of resources) {
-            if (i.path) {
-                const absPath = path.join(outDir, path.dirname(i.path))
-                if (!fs.existsSync(absPath)) {
-                    fs.mkdirSync(absPath, { recursive: true })
+async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
+    for (const type in whole) {
+        if (whole.hasOwnProperty(type)) {
+            const category = whole[type]
+            for (const nid in category) {
+                if (category.hasOwnProperty(nid)) {
+                    const element = category[nid]
+                    let resource: Resource = {
+                        buffer: element.buffer,
+                        interpreted: element.interpreted,
+                        location: {
+                            nid,
+                            type,
+                            extension: element.extension
+                        }
+                    }
+                    let resources: Resource[] = []
+                    logger.info(`Converting ${type} '${nid}'...`).indent()
+                    for (const adapter of adapters) {
+                        const result = await adapter.execute(resource, logger)
+                        if (result instanceof Array) {
+                            resources.push(...result)
+                            break
+                        } else {
+                            resource = result
+                            resources = [result]
+                        }
+                    }
+                    for (const i of resources) {
+                        whole[resource.location.type][resource.location.nid] = {
+                            buffer: i.buffer,
+                            interpreted: i.interpreted,
+                            extension: i.location.extension
+                        }
+                    }
+                    logger.info('OwO').indent(-1)
                 }
-                await fs.writeFile(path.join(outDir, i.path), i.content)
-                logger.info(`Created file '{outDir}/${i.path}'.`)
-            } else {
-                logger.info('Removed file.')
             }
         }
-    } catch (ex) {
-        logger.error(ex)
     }
 }
 

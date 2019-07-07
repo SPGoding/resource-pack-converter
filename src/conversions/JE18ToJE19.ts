@@ -1,10 +1,11 @@
 import Conversion from './Conversion'
-import WarnAdapter from '../adapters/general/WarnAdapter'
-import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
 import PathAdapter from '../adapters/general/PathAdapter'
+import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
 import ResourceFilter from '../utils/ResourceFilter'
-import ClockCompassAdapter from '../adapters/je18-je19/ClockCompassAdapter'
+import SplitAdapter from '../adapters/je18-je19/SplitAdapter'
+import WarnAdapter from '../adapters/general/WarnAdapter'
 import Whole from '../utils/Whole'
+import { standardizeNid, getRelFromNid } from '../utils/utils'
 
 export default {
     from: 'JE1.8',
@@ -405,7 +406,65 @@ export default {
             ]
         }),
         (whole: Whole) => {
-            return new ClockCompassAdapter()
+            return getAdaptersForClockOrCompass(
+                whole,
+                'minecraft:item/clock',
+                'minecraft:builtin/clock',
+                'minecraft:items/clock'
+            )
+        },
+        (whole: Whole) => {
+            return getAdaptersForClockOrCompass(
+                whole,
+                'minecraft:item/compass',
+                'minecraft:builtin/compass',
+                'minecraft:items/compass'
+            )
         }
     ]
 } as Conversion
+
+function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expectedParent: string, textureNid: string) {
+    const model = whole.models[modelNid]
+    if (model) {
+        // There is model defined in the resource pack.
+        if (model.textures && model.textures.layer0 &&
+            model.parent && standardizeNid(model.parent) === expectedParent) {
+            // This model is valid.
+            textureNid = model.textures.layer0
+        } else {
+            // This model is invalid.
+            return [
+                new WarnAdapter({
+                    warnings: [
+                        {
+                            filter: new ResourceFilter('models', [new RegExp(`^${modelNid}$`)], ['json']),
+                            send: [
+                                'This model is invalid.'
+                            ]
+                        }
+                    ]
+                })
+            ]
+        }
+    }
+
+    return [
+        new WarnAdapter({
+            warnings: [
+                {
+                    filter: new ResourceFilter('textures', [new RegExp(`^${textureNid}$`)], ['png.mcmeta']),
+                    send: [
+                        'This file may not be necessary.'
+                    ]
+                }
+            ]
+        }),
+        new SplitAdapter(
+            {
+                modelRel: getRelFromNid(modelNid, 'models', 'json'),
+                textureRel: getRelFromNid(textureNid, 'textures', 'png')
+            }
+        )
+    ]
+}

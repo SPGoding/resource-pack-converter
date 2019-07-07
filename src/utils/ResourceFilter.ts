@@ -1,6 +1,11 @@
 import { getNidFromRel, replaceWithRegExp, getRelFromNid, standardizeNid } from './utils'
 
 export default class ResourceFilter {
+    /**
+     * @param type Type of the resource. e,g, `textures`, `models`.
+     * @param nids Namespaced IDs.
+     * @param extensions Without dot. e.g. `png`, `png.mcmeta`.
+     */
     constructor(
         public readonly type: string,
         public readonly nids: RegExp[],

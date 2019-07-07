@@ -1,4 +1,8 @@
 import * as path from 'path'
+import Blockstate from './Blockstate'
+import Logger from './logger'
+import ResourceFilter from './ResourceFilter'
+import Model, { Direction } from './Model'
 
 /**
  * A game version which the resource pack is compatible with.
@@ -78,4 +82,149 @@ export function getRelFromNid(nid: string, type: string, ext: string) {
     const namespace = parts[0]
     const name = parts[1]
     return `assets/${namespace}/${type}/${name}.${ext}`
+}
+
+/**
+ * Change all namespaced IDs in a blockstate.
+ * @param bs The blockstate. Will be changed after execution.
+ * @param filter The filter of the namespaced ID.
+ * @param setTo The new namespaced ID.
+ * @param logger A logger.
+ * @returns Whether `bs` is changed or not.
+ */
+export function changeNidInBlockstate(bs: Blockstate, filter: ResourceFilter, setTo: string, logger: Logger) {
+    let changed = false
+    if (bs.multipart) {
+        for (let i = 0; i < bs.multipart.length; i++) {
+            const part = bs.multipart[i]
+            if (part.apply instanceof Array) {
+                for (let j = 0; j < part.apply.length; j++) {
+                    const apply = part.apply[j]
+                    if (filter.testNid(apply.model)) {
+                        changed = true
+                        logger.info(`Updated 'multipart[${i}].apply[${j}].model' from '${apply.model}' to '${setTo}'.`)
+                        apply.model = setTo
+                    }
+                }
+            } else {
+                if (filter.testNid(part.apply.model)) {
+                    changed = true
+                    logger.info(`Updated 'multipart[${i}].apply.model' from '${part.apply.model}' to '${setTo}'.`)
+                    part.apply.model = setTo
+                }
+            }
+        }
+    } else if (bs.variants) {
+        for (const key in bs.variants) {
+            const variant = bs.variants[key]
+            if (variant instanceof Array) {
+                for (let i = 0; i < variant.length; i++) {
+                    const model = variant[i]
+                    if (filter.testNid(model.model)) {
+                        changed = true
+                        logger.info(`Updated 'variants[${i}].model' from '${model.model}' to '${setTo}'.`)
+                        model.model = setTo
+                    }
+                }
+            } else {
+                if (filter.testNid(variant.model)) {
+                    changed = true
+                    logger.info(`Updated 'variant.model' from '${variant.model}' to '${setTo}'.`)
+                    variant.model = setTo
+                }
+            }
+        }
+    }
+    return changed
+}
+
+/**
+ * Change all model namespaced IDs in a model.
+ * @param model The model. Will be changed after execution.
+ * @param filter The filter of the model namespaced ID.
+ * @param setTo The new namespaced ID.
+ * @param logger A logger.
+ * @returns Whether `model` is changed or not.
+ */
+export function changeModelNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger) {
+    let changed = false
+    if (model.parent) {
+        const value = model.parent
+        if (filter.testNid(value)) {
+            changed = true
+            logger.info(`Updated 'model.parent' from '${value}' to '${setTo}'.`)
+            model.parent = setTo
+        }
+    }
+    if (model.overrides) {
+        for (let i = 0; i < model.overrides.length; i++) {
+            const override = model.overrides[i]
+            const value = override.model
+            if (value) {
+                if (filter.testNid(value)) {
+                    changed = true
+                    logger.info(`Updated 'overrides[${i}].model' from '${value}' to '${setTo}'.`)
+                    override.model = setTo
+                }
+            }
+        }
+    }
+    return changed
+}
+
+/**
+ * Change all texture namespaced IDs in a model.
+ * @param model The model. Will be changed after execution.
+ * @param filter The filter of the texture namespaced ID.
+ * @param setTo The new namespaced ID.
+ * @param logger A logger.
+ * @returns Whether `model` is changed or not.
+ */
+export function changeTextureNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger) {
+    let changed = false
+    if (model.textures) {
+        for (const variable in model.textures) {
+            const value = model.textures[variable]
+            if (filter.testNid(value)) {
+                changed = true
+                logger.info(`Updated 'textures.${variable}' from '${value}' to '${setTo}'.`)
+                model.textures[variable] = setTo
+            }
+        }
+    }
+    if (model.elements) {
+        for (let i = 0; i < model.elements.length; i++) {
+            const element = model.elements[i]
+            if (element.faces) {
+                for (const direction in element.faces) {
+                    const face = element.faces[(direction as Direction)]
+                    const value = face.texture
+                    if (value) {
+                        if (filter.testNid(value)) {
+                            logger.info(`Updated 'elements[${i}].faces.texture' from '${value}' to '${setTo}'.`)
+                            changed = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return changed
+}
+
+/**
+ * Change all specific namespaced IDs in a model.
+ * @param model The model. Will be changed after execution.
+ * @param filter The filter of the namespaced ID.
+ * @param setTo The new namespaced ID.
+ * @param logger A logger.
+ * @returns Whether `model` is changed or not.
+ */
+export function changeNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger) {
+    if (filter.type === 'models') {
+        return changeModelNidInModel(model, filter, setTo, logger)
+    } else if (filter.type === 'textures') {
+        return changeTextureNidInModel(model, filter, setTo, logger)
+    }
+    return false
 }
