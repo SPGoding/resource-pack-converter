@@ -1,4 +1,5 @@
 import { getNidFromRel, replaceWithRegExp, getRelFromNid, standardizeNid } from './utils'
+import { Location } from './Resource'
 
 export default class ResourceFilter {
     /**
@@ -12,6 +13,11 @@ export default class ResourceFilter {
         public readonly extensions: string[]
     ) { }
 
+    /**
+     * Test whether a namespaced ID match this filter.
+     * You have to test whether the `type` and `extensions` match manually.
+     * @param nid The namespaced ID.
+     */
     public testNid(nid: string) {
         for (const regex of this.nids) {
             if (regex.test(standardizeNid(nid))) {
@@ -21,6 +27,32 @@ export default class ResourceFilter {
         return false
     }
 
+    public testLoc(loc: Location) {
+        if (loc.type === this.type && this.extensions.indexOf(loc.ext) !== -1) {
+            for (const regex of this.nids) {
+                if (regex.test(standardizeNid(loc.nid))) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    public getTargetNid(loc: Location, targetNidWithPlaceholders: string) {
+        if (loc.type === this.type && this.extensions.indexOf(loc.ext) !== -1) {
+            for (const regex of this.nids) {
+                const targetNid = replaceWithRegExp(targetNidWithPlaceholders, loc.nid, regex)
+                if (targetNid) {
+                    return targetNid
+                }
+            }
+        }
+        return ''
+    }
+
+    /**
+     * @deprecated
+     */
     public testRel(rel: string) {
         for (const regex of this.nids) {
             for (const ext of this.extensions) {
@@ -35,6 +67,9 @@ export default class ResourceFilter {
         return false
     }
 
+    /**
+     * @deprecated
+     */
     public getTargetRel(sourceRel: string, targetNidWithPlaceholders: string) {
         for (const regex of this.nids) {
             for (const ext of this.extensions) {

@@ -2,7 +2,7 @@ import Adapter from '../Adapter'
 import Resource from '../../utils/Resource'
 import Logger from '../../utils/Logger'
 import ResourceFilter from '../../utils/ResourceFilter'
-import { replaceWithRegExp } from '../../utils/utils'
+import { replaceWithRegExp, getRelFromLoc } from '../../utils/utils'
 
 export interface WarnAdapterParams {
     /**
@@ -12,6 +12,7 @@ export interface WarnAdapterParams {
         /**
          * The warnings will be sent if specific files exist. Should be an 
          * Regular Expression.
+         * @deprecated
          */
         find?: RegExp | RegExp[],
         /**
@@ -35,14 +36,13 @@ export default class WarnAdapter extends Adapter {
             }
             if (warning.find) {
                 for (const i of warning.find) {
-                    const regex = i
-                    if (input.path.match(regex)) {
-                        const messages = warning.send.map(v => replaceWithRegExp(v, input.path, regex))
+                    if (getRelFromLoc(input.loc).match(i)) {
+                        const messages = warning.send.map(v => replaceWithRegExp(v, getRelFromLoc(input.loc), i))
                         logger.warn(...messages)
                     }
                 }
             } else if (warning.filter) {
-                if (warning.filter.testRel(input.path)) {
+                if (warning.filter.testLoc(input.loc)) {
                     logger.warn(...warning.send)
                 }
             } else {

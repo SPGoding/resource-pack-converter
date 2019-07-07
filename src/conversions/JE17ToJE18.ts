@@ -2,6 +2,7 @@ import Conversion from './Conversion'
 import WarnAdapter from '../adapters/general/WarnAdapter'
 import PackMcmetaAdapter from '../adapters/general/PackMcmetaAdapter'
 import SkinAdapter from '../adapters/je17-je18/SkinAdapter'
+import ResourceFilter from '../utils/ResourceFilter'
 
 export default {
     from: 'JE1.7',
@@ -171,7 +172,7 @@ export default {
             ]
         }),
         new SkinAdapter({
-            find: /^assets\/minecraft\/textures\/entity\/steve\.png$/
+            filter: new ResourceFilter('textures', [/^minecraft:entity\/steve$/], ['png'])
         })
     ]
 } as Conversion

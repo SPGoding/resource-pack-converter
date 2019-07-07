@@ -9,49 +9,49 @@ export default interface Whole {
     blockstates: {
         [nid: string]: {
             buffer: Buffer,
-            interpreted?: Blockstate,
-            extension: string
+            value?: Blockstate,
+            ext: string
         }
     },
     lang: {
         [nid: string]: {
             buffer: Buffer,
-            interpreted?: string, // TODO
-            extension: string
+            value?: string, // TODO
+            ext: string
         }
     },
     models: {
         [nid: string]: {
             buffer: Buffer,
-            interpreted?: Model,
-            extension: string
+            value?: Model,
+            ext: string
         }
     },
     texts: {
         [nid: string]: {
             buffer: Buffer,
-            interpreted?: string,
-            extension: string
+            value?: string,
+            ext: string
         }
     },
     textures: {
         [nid: string]: {
             buffer: Buffer,
-            interpreted?: Image,
-            extension: string
+            value?: Image,
+            ext: string
         }
     },
     '?': {
         [path: string]: {
             buffer: Buffer,
-            extension: string
+            ext: string
         }
     },
     [type: string]: {
         [nid: string]: {
             buffer: Buffer,
-            interpreted?: any,
-            extension: string
+            value?: any,
+            ext: string
         }
     }
 }

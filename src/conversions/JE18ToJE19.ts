@@ -6,6 +6,7 @@ import SplitAdapter from '../adapters/je18-je19/SplitAdapter'
 import WarnAdapter from '../adapters/general/WarnAdapter'
 import Whole from '../utils/Whole'
 import { standardizeNid, getRelFromNid } from '../utils/utils'
+import Model from '../utils/Model'
 
 export default {
     from: 'JE1.8',
@@ -425,8 +426,10 @@ export default {
 } as Conversion
 
 function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expectedParent: string, textureNid: string) {
-    const model = whole.models[modelNid]
-    if (model) {
+    const resource = whole.models[modelNid]
+    if (resource) {
+        resource.value = resource.value || JSON.parse(resource.buffer.toString('utf8'))
+        const model = <Model>resource.value
         // There is model defined in the resource pack.
         if (model.textures && model.textures.layer0 &&
             model.parent && standardizeNid(model.parent) === expectedParent) {

@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import Adapter from './adapters/Adapter'
-import { getRelFromAbs, getNidFromRel } from './utils/utils'
+import { getNidFromRel } from './utils/utils'
 import Resource from './utils/Resource'
 import Logger from './utils/Logger'
 import Conversion from './conversions/Conversion'
@@ -61,16 +61,16 @@ async function getWhole(inDir: string, logger: Logger) {
                 await recurse(dirPrefix, path.join(dir, v), ans)
             } else {
                 const filePath = path.join(dir, v)
-                const extension = path.extname(filePath).slice(1)
+                const ext = filePath.slice(filePath.indexOf('.', filePath.lastIndexOf(path.sep)) + 1)
                 const { nid, type } = getNidFromRel(
                     path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/'),
-                    extension
+                    ext
                 )
                 const buffer = await fs.readFile(filePath)
                 let category = ans[type]
                 category = category || {}
-                category[nid] = { buffer, extension }
-                logger.dbug(`Added '${nid}' with extension '${extension}' to 'Whole.${type}'.`)
+                category[nid] = { buffer, ext: ext }
+                logger.dbug(`Added '${type} | ${ext} | ${nid}'.`)
             }
         }
     }
@@ -115,18 +115,18 @@ async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
             const category = whole[type]
             for (const nid in category) {
                 if (category.hasOwnProperty(nid)) {
-                    const element = category[nid]
+                    const ele = category[nid]
                     let resource: Resource = {
-                        buffer: element.buffer,
-                        interpreted: element.interpreted,
-                        location: {
+                        buffer: ele.buffer,
+                        interpreted: ele.value,
+                        loc: {
                             nid,
                             type,
-                            extension: element.extension
+                            ext: ele.ext
                         }
                     }
                     let resources: Resource[] = []
-                    logger.info(`Converting ${type} '${nid}'...`).indent()
+                    logger.info(`Converting '${type} | ${ele.ext} | ${nid}'...`).indent()
                     for (const adapter of adapters) {
                         const result = await adapter.execute(resource, logger)
                         if (result instanceof Array) {
@@ -138,13 +138,13 @@ async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
                         }
                     }
                     for (const i of resources) {
-                        whole[resource.location.type][resource.location.nid] = {
+                        whole[resource.loc.type][resource.loc.nid] = {
                             buffer: i.buffer,
-                            interpreted: i.interpreted,
-                            extension: i.location.extension
+                            value: i.interpreted,
+                            ext: i.loc.ext
                         }
                     }
-                    logger.info('OwO').indent(-1)
+                    logger.info('Succeeded.').indent(-1)
                 }
             }
         }

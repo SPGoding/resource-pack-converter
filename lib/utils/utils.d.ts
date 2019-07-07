@@ -2,6 +2,7 @@ import Blockstate from './Blockstate';
 import Logger from './logger';
 import ResourceFilter from './ResourceFilter';
 import Model from './Model';
+import { Location } from './Resource';
 /**
  * A game version which the resource pack is compatible with.
  */
@@ -39,38 +40,41 @@ export declare function standardizeNid(nid: string): string;
  */
 export declare function getRelFromNid(nid: string, type: string, ext: string): string;
 /**
+ * Get the relative path from an namespaced ID.
+ * @param nid The namespaced ID.
+ * @param type The type of resource.
+ * @param ext The file extension.
+ */
+export declare function getRelFromLoc(loc: Location): string;
+/**
  * Change all namespaced IDs in a blockstate.
  * @param bs The blockstate. Will be changed after execution.
  * @param filter The filter of the namespaced ID.
  * @param setTo The new namespaced ID.
  * @param logger A logger.
- * @returns Whether `bs` is changed or not.
  */
-export declare function changeNidInBlockstate(bs: Blockstate, filter: ResourceFilter, setTo: string, logger: Logger): boolean;
+export declare function changeNidInBlockstate(bs: Blockstate, filter: ResourceFilter, setTo: string, logger: Logger): void;
 /**
  * Change all model namespaced IDs in a model.
  * @param model The model. Will be changed after execution.
  * @param filter The filter of the model namespaced ID.
  * @param setTo The new namespaced ID.
  * @param logger A logger.
- * @returns Whether `model` is changed or not.
  */
-export declare function changeModelNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger): boolean;
+export declare function changeModelNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger): void;
 /**
  * Change all texture namespaced IDs in a model.
  * @param model The model. Will be changed after execution.
  * @param filter The filter of the texture namespaced ID.
  * @param setTo The new namespaced ID.
  * @param logger A logger.
- * @returns Whether `model` is changed or not.
  */
-export declare function changeTextureNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger): boolean;
+export declare function changeTextureNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger): void;
 /**
  * Change all specific namespaced IDs in a model.
  * @param model The model. Will be changed after execution.
  * @param filter The filter of the namespaced ID.
  * @param setTo The new namespaced ID.
  * @param logger A logger.
- * @returns Whether `model` is changed or not.
  */
-export declare function changeNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger): boolean;
+export declare function changeNidInModel(model: Model, filter: ResourceFilter, setTo: string, logger: Logger): void;
