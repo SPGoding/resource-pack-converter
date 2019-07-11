@@ -19,3 +19,9 @@
 - 将贴图 `minecraft:entity/steve` 修改为双层皮肤格式
 
 ### JE1.8 至 JE1.9
+- 将模型 `minecraft:block/fire_floor_main` 移动到 `minecraft:block/fire_floor0`
+- 将模型 `minecraft:block/fire_u1` 移动到 `minecraft:block/fire_up`
+- 将模型 `minecraft:block/fire_u2` 移动到 `minecraft:block/fire_up_alt`
+- 将模型 `minecraft:block/mossy_wall_post` 移动到 `minecraft:block/mossy_cobblestone_wall_post`
+- 将模型 `minecraft:item/clock` 中定义的贴图变量 `#layer0`（默认为 `minecraft:items/clock`）拆分
+- 将模型 `minecraft:item/compass` 中定义的贴图变量 `#layer0`（默认为 `minecraft:items/compass`）拆分

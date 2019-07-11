@@ -467,7 +467,6 @@ async function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expe
             {
                 modelFilter: new ResourceFilter('models', modelNid, ['json']),
                 textureFilter: new ResourceFilter('textures', textureNid, ['png']),
-                textureNidPrefix: textureNid,
                 count
             }
         )

@@ -1,6 +1,7 @@
 import Adapter from '../Adapter'
 
 import Logger from '../../utils/Logger'
+import Model from '../../utils/Model'
 import Resource from '../../utils/Resource'
 import ResourceFilter from '../../utils/ResourceFilter'
 import { changeTextureNidInModel } from '../../utils/utils'
@@ -9,7 +10,6 @@ import { Canvas, loadImage, Image } from 'canvas'
 export interface SplitAdapterParams {
     textureFilter: ResourceFilter,
     modelFilter: ResourceFilter,
-    textureNidPrefix: string,
     count: number
 }
 
@@ -22,7 +22,10 @@ export default class SplitAdapter implements Adapter {
                 input.value = await loadImage(input.value)
             }
             const img: Image = input.value
-            const ans: Resource[] = []
+            const ans: Resource[] = [
+                // Remove input texture.
+                { ...input, value: null }
+            ]
             const length = img.width
             for (let i = 0; i < this.params.count; i++) {
                 const canvas = new Canvas(length, length)
@@ -37,21 +40,25 @@ export default class SplitAdapter implements Adapter {
                     }
                 })
             }
-            logger.info(`Splitted to ${ans.length} textures.`)
+            logger.info(`Splitted to ${ans.length - 1} textures.`) // Minus 1, because of removing input texture.
             return ans
         } else if (this.params.modelFilter.testLoc(input.loc)) {
-            const ans: Resource[] = []
+            const ans: Resource[] = [
+                // Remove input model.
+                { ...input, value: null }
+            ]
             if (input.value instanceof Buffer) {
                 input.value = JSON.parse(input.value.toString('utf8'))
             }
             delete input.value.parent
             for (let i = 0; i < this.params.count; i++) {
                 const suffix = i < 10 ? `0${i}` : i
-                const textureNid = `${this.params.textureNidPrefix}_${suffix}`
+                const textureNid = `${this.params.textureFilter.nid}_${suffix}`
                 const modelNid = `${input.loc.nid}_${suffix}`
-                changeTextureNidInModel(input.value, this.params.textureFilter, textureNid, logger)
+                const value: Model = JSON.parse(JSON.stringify(input.value))
+                changeTextureNidInModel(value, this.params.textureFilter, textureNid, new Logger())
                 ans.push({
-                    value: input.value,
+                    value,
                     loc: {
                         type: input.loc.type,
                         ext: input.loc.ext,
@@ -59,7 +66,7 @@ export default class SplitAdapter implements Adapter {
                     }
                 })
             }
-            logger.info(`Splitted to ${ans.length} models.`)
+            logger.info(`Splitted to ${ans.length - 1} models.`) // Minus 1, because of removing input model.
             return ans
         } else {
             return input

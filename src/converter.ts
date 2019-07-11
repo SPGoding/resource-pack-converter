@@ -152,7 +152,11 @@ async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
                                 }
                             }
                             for (const i of resources) {
-                                whole[input.loc.type][input.loc.ext][input.loc.nid] = i.value
+                                if (i.value === null) {
+                                    delete whole[i.loc.type][i.loc.ext][i.loc.nid]
+                                } else {
+                                    whole[i.loc.type][i.loc.ext][i.loc.nid] = i.value
+                                }
                             }
                             logger.info('Succeeded.').indent(-1)
                         }
@@ -164,7 +168,6 @@ async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
 }
 
 async function saveWhole(whole: Whole, outDir: string, logger: Logger) {
-    logger.info(whole)
     for (const type in whole) {
         if (whole.hasOwnProperty(type)) {
             const category = whole[type]
@@ -180,8 +183,9 @@ async function saveWhole(whole: Whole, outDir: string, logger: Logger) {
                             if (typeof value === 'string') {
                                 extObject[nid] = Buffer.from(value, 'utf8')
                             } else if (value instanceof Image) {
+                                logger.dbug('fuck')
                                 extObject[nid] = value.src as Buffer
-                            } else if (value instanceof Object) {
+                            } else if (!(value instanceof Buffer) && value instanceof Object) {
                                 extObject[nid] = Buffer.from(JSON.stringify(value, undefined, 4), 'utf8')
                             }
                             if (!await fs.pathExists(dir)) {

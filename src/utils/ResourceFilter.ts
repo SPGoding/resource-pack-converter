@@ -1,4 +1,4 @@
-import { getNidFromRel, replaceWithRegExp, getRelFromNid, standardizeNid } from './utils'
+import { replaceWithRegExp, standardizeNid } from './utils'
 import { Location } from './Resource'
 
 export default class ResourceFilter {
