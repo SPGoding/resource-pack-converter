@@ -3,7 +3,7 @@ import Adapter from '../Adapter'
 import { replaceWithRegExp } from '../../utils/utils'
 import Resource from '../../utils/Resource'
 import Logger from '../../utils/Logger'
-import { Canvas, loadImage } from 'canvas'
+import { Canvas, loadImage, Image } from 'canvas'
 import ResourceFilter from '../../utils/ResourceFilter'
 
 export interface SkinAdapterParams {
@@ -13,13 +13,15 @@ export interface SkinAdapterParams {
     filter: ResourceFilter
 }
 
-export default class SkinAdapter extends Adapter {
-    constructor(private readonly params: SkinAdapterParams) { super() }
+export default class SkinAdapter implements Adapter {
+    constructor(public readonly params: SkinAdapterParams) { }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (this.params.filter.testLoc(input.loc)) {
-            const img = input.value =
-                input.value || await loadImage(input.buffer)
+            if (input.value instanceof Buffer) {
+                input.value = await loadImage(input.value)
+            }
+            const img: Image = input.value
             const length = img.width
             const canvas = new Canvas(length, length)
             const slength = length / 4
@@ -34,7 +36,7 @@ export default class SkinAdapter extends Adapter {
             ctx.drawImage(img, 0, 0)
             ctx.drawImage(img, sx1, sy1, slength, slength, x1, y, slength, slength)
             ctx.drawImage(img, sx2, sy2, slength, slength, x2, y, slength, slength)
-            input.buffer = canvas.toBuffer('image/png')
+            input.value = canvas.toBuffer('image/png')
             delete input.value
 
             logger.info('Added second layer for skin.')

@@ -1,57 +1,46 @@
-import { Image } from 'canvas'
 import Blockstate from './Blockstate'
 import Model from './Model'
+import { Image } from 'canvas'
 
 /**
  * Structure of the Whole.
  */
 export default interface Whole {
     blockstates: {
-        [nid: string]: {
-            buffer: Buffer,
-            value?: Blockstate,
-            ext: string
+        json: {
+            [nid: string]: Buffer | Blockstate | undefined
+        },
+        [ext: string]: {
+            [nid: string]: any
         }
     },
     lang: {
-        [nid: string]: {
-            buffer: Buffer,
-            value?: string, // TODO
-            ext: string
+        [ext: string]: {
+            [nid: string]: Buffer | string | undefined // TODO
         }
     },
     models: {
-        [nid: string]: {
-            buffer: Buffer,
-            value?: Model,
-            ext: string
-        }
-    },
-    texts: {
-        [nid: string]: {
-            buffer: Buffer,
-            value?: string,
-            ext: string
+        json: {
+            [nid: string]: Buffer | Model | undefined
+        },
+        [ext: string]: {
+            [nid: string]: any
         }
     },
     textures: {
-        [nid: string]: {
-            buffer: Buffer,
-            value?: Image,
-            ext: string
-        }
-    },
-    '?': {
-        [path: string]: {
-            buffer: Buffer,
-            ext: string
+        png: {
+            [nid: string]: Buffer | Image | undefined
+        },
+        'png.mcmeta': {
+            [nid: string]: Buffer | string | undefined // TODO
+        },
+        [ext: string]: {
+            [nid: string]: any
         }
     },
     [type: string]: {
-        [nid: string]: {
-            buffer: Buffer,
-            value?: any,
-            ext: string
+        [ext: string]: {
+            [nid: string]: Buffer | string | Blockstate | Model | Image | undefined
         }
     }
 }

@@ -1,11 +1,12 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import Adapter from './adapters/Adapter'
-import { getNidFromRel } from './utils/utils'
 import Resource from './utils/Resource'
 import Logger from './utils/Logger'
 import Conversion from './conversions/Conversion'
 import Whole from './utils/Whole'
+import { getNidFromRel, getRelFromNid, getRelFromAbs } from './utils/utils'
+import { Image } from 'canvas'
 
 /**
  * The options for converter.
@@ -40,12 +41,16 @@ export async function convert(src: string, options: ConverterOptions) {
         await logger.dbug('Got the Whole.').indent(-1)
 
         logger.dbug('Initializing adapters...').indent()
-        const adapters = getAdapters(whole, options.conversion, logger)
-        logger.dbug(`Initialized ${adapters.length} adapter(s).`).indent(-1)
+        const adapters = await getAdapters(whole, options.conversion, logger)
+        await logger.dbug(`Initialized ${adapters.length} adapter(s).`).indent(-1)
 
-        logger.info('Starting conversion...')
+        logger.info('Starting conversion...').indent()
         await convertWhole(whole, adapters, logger)
-        logger.info('Finished conversion.')
+        logger.info('Finished conversion.').indent(-1)
+
+        logger.info('Saving the Whole...').indent()
+        await saveWhole(whole, outDir, logger)
+        logger.info('Saved the Whole.').indent(-1)
     } catch (ex) {
         logger.error(ex)
     } finally {
@@ -62,25 +67,26 @@ async function getWhole(inDir: string, logger: Logger) {
             } else {
                 const filePath = path.join(dir, v)
                 const ext = filePath.slice(filePath.indexOf('.', filePath.lastIndexOf(path.sep)) + 1)
+                const rel = path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/')
                 const { nid, type } = getNidFromRel(
-                    path.relative(dirPrefix, path.resolve(path.join(dir, v))).replace(/\\/g, '/'),
+                    rel,
                     ext
                 )
                 const buffer = await fs.readFile(filePath)
-                let category = ans[type]
-                category = category || {}
-                category[nid] = { buffer, ext }
-                logger.dbug(`Added '${type} | ${ext} | ${nid}'.`)
+                const category = ans[type] || (ans[type] = {})
+                const extObject = category[ext] || (category[ext] = {})
+                extObject[nid] = buffer
+                logger.dbug(`Added '{inDir}/${rel}' as '${type} | ${ext} | ${nid}'.`)
             }
         }
     }
 
     const ans: Whole = {
-        blockstates: {},
+        blockstates: { json: {} },
         lang: {},
-        models: {},
+        models: { json: {} },
         texts: {},
-        textures: {},
+        textures: { png: {}, 'png.mcmeta': {} },
         '?': {}
     }
 
@@ -89,21 +95,34 @@ async function getWhole(inDir: string, logger: Logger) {
     return ans
 }
 
-function getAdapters(whole: Whole, conversion: Conversion, logger: Logger) {
-    const ans = []
-    for (const i of conversion.adapters) {
-        if (i instanceof Adapter) {
-            logger.dbug(`Initialized ${i.constructor.name}.`)
-            ans.push(i)
+async function getAdapters(whole: Whole, conversion: Conversion, logger: Logger) {
+    const ans: Adapter[] = []
+    function addAdapter(op: 'Initialized' | 'Constructed', adapter: Adapter, array: Adapter[]) {
+        array.push(adapter)
+        if (op === 'Initialized') {
+            logger.dbug(`${op} ${adapter.constructor.name}`)
         } else {
+            logger.dbug(`${op} ${adapter.constructor.name} with ${JSON.stringify(adapter.params)}`)
+        }
+    }
+
+    for (const i of conversion.adapters) {
+        if (i instanceof Function) {
             const result = i(whole)
             if (result instanceof Array) {
-                ans.push(...result)
-                result.forEach(v => void logger.dbug(`Constructed ${v.constructor.name}.`))
+                result.forEach(v => addAdapter('Constructed', v, ans))
+            } else if (result instanceof Promise) {
+                const resolve = await result
+                if (resolve instanceof Array) {
+                    resolve.forEach(v => addAdapter('Constructed', v, ans))
+                } else {
+                    addAdapter('Constructed', resolve, ans)
+                }
             } else {
-                ans.push(result)
-                logger.dbug(`Constructed ${result.constructor.name}.`)
+                addAdapter('Constructed', result, ans)
             }
+        } else {
+            addAdapter('Initialized', i, ans)
         }
     }
     return ans
@@ -113,38 +132,65 @@ async function convertWhole(whole: Whole, adapters: Adapter[], logger: Logger) {
     for (const type in whole) {
         if (whole.hasOwnProperty(type)) {
             const category = whole[type]
-            for (const nid in category) {
-                if (category.hasOwnProperty(nid)) {
-                    const ele = category[nid]
-                    let resource: Resource = {
-                        buffer: ele.buffer,
-                        value: ele.value,
-                        loc: {
-                            nid,
-                            type,
-                            ext: ele.ext
+            for (const ext in category) {
+                if (category.hasOwnProperty(ext)) {
+                    const extObject = category[ext]
+                    for (const nid in extObject) {
+                        if (extObject.hasOwnProperty(nid)) {
+                            const value = extObject[nid]
+                            let input: Resource = { value, loc: { nid, type, ext } }
+                            let resources: Resource[] = []
+                            logger.info(`Converting '${type} | ${ext} | ${nid}'...`).indent()
+                            for (const adapter of adapters) {
+                                const result = await adapter.execute(input, logger)
+                                if (result instanceof Array) {
+                                    resources.push(...result)
+                                    break
+                                } else {
+                                    input = result
+                                    resources = [result]
+                                }
+                            }
+                            for (const i of resources) {
+                                whole[input.loc.type][input.loc.ext][input.loc.nid] = i.value
+                            }
+                            logger.info('Succeeded.').indent(-1)
                         }
                     }
-                    let resources: Resource[] = []
-                    logger.info(`Converting '${type} | ${ele.ext} | ${nid}'...`).indent()
-                    for (const adapter of adapters) {
-                        const result = await adapter.execute(resource, logger)
-                        if (result instanceof Array) {
-                            resources.push(...result)
-                            break
-                        } else {
-                            resource = result
-                            resources = [result]
+                }
+            }
+        }
+    }
+}
+
+async function saveWhole(whole: Whole, outDir: string, logger: Logger) {
+    logger.info(whole)
+    for (const type in whole) {
+        if (whole.hasOwnProperty(type)) {
+            const category = whole[type]
+            for (const ext in category) {
+                if (category.hasOwnProperty(ext)) {
+                    const extObject = category[ext]
+                    for (const nid in extObject) {
+                        if (extObject.hasOwnProperty(nid)) {
+                            const value = extObject[nid]
+                            const rel = getRelFromNid(nid, type, ext)
+                            const abs = path.join(outDir, rel)
+                            const dir = path.dirname(abs)
+                            if (typeof value === 'string') {
+                                extObject[nid] = Buffer.from(value, 'utf8')
+                            } else if (value instanceof Image) {
+                                extObject[nid] = value.src as Buffer
+                            } else if (value instanceof Object) {
+                                extObject[nid] = Buffer.from(JSON.stringify(value, undefined, 4), 'utf8')
+                            }
+                            if (!await fs.pathExists(dir)) {
+                                fs.mkdirSync(dir, { recursive: true })
+                            }
+                            await fs.writeFile(abs, extObject[nid])
+                            logger.dbug(`Saved '${type} | ${ext} | ${nid}' to '{outDir}/${rel}'`)
                         }
                     }
-                    for (const i of resources) {
-                        whole[resource.loc.type][resource.loc.nid] = {
-                            buffer: i.buffer,
-                            value: i.value,
-                            ext: i.loc.ext
-                        }
-                    }
-                    logger.info('Succeeded.').indent(-1)
                 }
             }
         }

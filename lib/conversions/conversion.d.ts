@@ -20,5 +20,5 @@ export default interface Conversion {
     /**
      * Contains a set of adapters.
      */
-    adapters: (Adapter | ((whole: Whole) => (Adapter | Adapter[])))[];
+    adapters: (Adapter | ((whole: Whole) => (Adapter | Adapter[] | Promise<Adapter | Adapter[]>)))[];
 }

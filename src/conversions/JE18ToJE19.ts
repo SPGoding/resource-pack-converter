@@ -58,17 +58,6 @@ export default {
                     ]
                 },
                 {
-                    find: [
-                        /^assets\/minecraft\/models\/item\/clock\.json$/,
-                        /^assets\/minecraft\/textures\/items\/clock\.png\.mcmeta?$/,
-                        /^assets\/minecraft\/models\/item\/compass\.json$/,
-                        /^assets\/minecraft\/textures\/items\/compass\.png\.mcmeta?$/,
-                    ],
-                    send: [
-                        'This file may not work as intended.'
-                    ]
-                },
-                {
                     find: /^pack\.mcmeta$/,
                     send: [
                         'You may want to add following files:',
@@ -427,21 +416,17 @@ export default {
 } as Conversion
 
 async function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expectedParent: string, textureNid: string) {
-    const resource = whole.models[modelNid]
+    let model = whole.models.json[modelNid]
     let count = 1
-    if (resource) {
-        resource.value = resource.value || JSON.parse(resource.buffer.toString('utf8'))
-        const model = <Model>resource.value
+    if (model) {
+        if (model instanceof Buffer) {
+            model = JSON.parse(model.toString('utf8')) as Model
+        }
         // There is model defined in the resource pack.
-        if (model.textures && model.textures.layer0 &&
+        if (model && model.textures && model.textures.layer0 &&
             model.parent && standardizeNid(model.parent) === expectedParent) {
             // This model is valid.
             textureNid = standardizeNid(model.textures.layer0)
-            const img = whole.textures[textureNid].value =
-                whole.textures[textureNid].value || await loadImage(whole.textures[textureNid].buffer)
-            if (img) {
-                count = img.height / img.width
-            }
         } else {
             // This model is invalid.
             return [
@@ -459,6 +444,14 @@ async function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expe
         }
     }
 
+    let texture = whole.textures.png[textureNid]
+    if (texture instanceof Buffer) {
+        texture = await loadImage(texture)
+    }
+    if (texture) {
+        count = texture.height / texture.width
+    }
+
     return [
         new WarnAdapter({
             warnings: [
@@ -473,7 +466,7 @@ async function getAdaptersForClockOrCompass(whole: Whole, modelNid: string, expe
         new SplitAdapter(
             {
                 modelFilter: new ResourceFilter('models', modelNid, ['json']),
-                textureFilter: new ResourceFilter('models', textureNid, ['json']),
+                textureFilter: new ResourceFilter('textures', textureNid, ['png']),
                 textureNidPrefix: textureNid,
                 count
             }

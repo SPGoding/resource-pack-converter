@@ -76,13 +76,17 @@ export function standardizeNid(nid: string) {
  * @param ext The file extension.
  */
 export function getRelFromNid(nid: string, type: string, ext: string) {
-    if (nid.indexOf(':') === -1) {
-        nid = `minecraft:${nid}`
+    if (type !== '?') {
+        if (nid.indexOf(':') === -1) {
+            nid = `minecraft:${nid}`
+        }
+        const parts = nid.split(':')
+        const namespace = parts[0]
+        const name = parts[1]
+        return `assets/${namespace}/${type}/${name}.${ext}`
+    } else {
+        return nid
     }
-    const parts = nid.split(':')
-    const namespace = parts[0]
-    const name = parts[1]
-    return `assets/${namespace}/${type}/${name}.${ext}`
 }
 
 /**
@@ -110,13 +114,13 @@ export function changeNidInBlockstate(bs: Blockstate, filter: ResourceFilter, se
                 for (let j = 0; j < part.apply.length; j++) {
                     const apply = part.apply[j]
                     if (filter.testNid(apply.model)) {
-                        logger.info(`Updated 'multipart[${i}].apply[${j}].model' from '${apply.model}' to '${setTo}'.`)
+                        logger.info(`Changed 'multipart[${i}].apply[${j}].model' from '${apply.model}' to '${setTo}'.`)
                         apply.model = setTo
                     }
                 }
             } else {
                 if (filter.testNid(part.apply.model)) {
-                    logger.info(`Updated 'multipart[${i}].apply.model' from '${part.apply.model}' to '${setTo}'.`)
+                    logger.info(`Changed 'multipart[${i}].apply.model' from '${part.apply.model}' to '${setTo}'.`)
                     part.apply.model = setTo
                 }
             }
@@ -128,13 +132,13 @@ export function changeNidInBlockstate(bs: Blockstate, filter: ResourceFilter, se
                 for (let i = 0; i < variant.length; i++) {
                     const model = variant[i]
                     if (filter.testNid(model.model)) {
-                        logger.info(`Updated 'variants[${i}].model' from '${model.model}' to '${setTo}'.`)
+                        logger.info(`Changed 'variants[${i}].model' from '${model.model}' to '${setTo}'.`)
                         model.model = setTo
                     }
                 }
             } else {
                 if (filter.testNid(variant.model)) {
-                    logger.info(`Updated 'variant.model' from '${variant.model}' to '${setTo}'.`)
+                    logger.info(`Changed 'variant.model' from '${variant.model}' to '${setTo}'.`)
                     variant.model = setTo
                 }
             }
@@ -153,7 +157,7 @@ export function changeModelNidInModel(model: Model, filter: ResourceFilter, setT
     if (model.parent) {
         const value = model.parent
         if (filter.testNid(value)) {
-            logger.info(`Updated 'parent' from '${value}' to '${setTo}'.`)
+            logger.info(`Changed 'parent' from '${value}' to '${setTo}'.`)
             model.parent = setTo
         }
     }
@@ -163,7 +167,7 @@ export function changeModelNidInModel(model: Model, filter: ResourceFilter, setT
             const value = override.model
             if (value) {
                 if (filter.testNid(value)) {
-                    logger.info(`Updated 'overrides[${i}].model' from '${value}' to '${setTo}'.`)
+                    logger.info(`Changed 'overrides[${i}].model' from '${value}' to '${setTo}'.`)
                     override.model = setTo
                 }
             }
@@ -183,7 +187,7 @@ export function changeTextureNidInModel(model: Model, filter: ResourceFilter, se
         for (const variable in model.textures) {
             const value = model.textures[variable]
             if (filter.testNid(value)) {
-                logger.info(`Updated 'textures.${variable}' from '${value}' to '${setTo}'.`)
+                logger.info(`Changed 'textures.${variable}' from '${value}' to '${setTo}'.`)
                 model.textures[variable] = setTo
             }
         }
@@ -197,7 +201,7 @@ export function changeTextureNidInModel(model: Model, filter: ResourceFilter, se
                     const value = face.texture
                     if (value) {
                         if (filter.testNid(value)) {
-                            logger.info(`Updated 'elements[${i}].faces.texture' from '${value}' to '${setTo}'.`)
+                            logger.info(`Changed 'elements[${i}].faces.texture' from '${value}' to '${setTo}'.`)
                         }
                     }
                 }

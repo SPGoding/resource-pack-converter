@@ -3,7 +3,7 @@ import Adapter from '../Adapter'
 import Resource from '../../utils/Resource'
 import Logger from '../../utils/Logger'
 import ResourceFilter from '../../utils/ResourceFilter'
-import { Canvas, loadImage } from 'canvas'
+import { Canvas, loadImage, Image } from 'canvas'
 
 export interface SkinAdapterParams {
     /**
@@ -12,18 +12,20 @@ export interface SkinAdapterParams {
     filter: ResourceFilter
 }
 
-export default class SkinAdapter extends Adapter {
-    constructor(private readonly params: SkinAdapterParams) { super() }
+export default class SkinAdapter implements Adapter {
+    constructor(public readonly params: SkinAdapterParams) { }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (this.params.filter.testLoc(input.loc)) {
-            const img = input.value =
-                input.value || await loadImage(input.buffer)
+            if (input.value instanceof Buffer) {
+                input.value = await loadImage(input.value)
+            }
+            const img: Image = input.value
             const length = img.width
             const canvas = new Canvas(length, length / 2)
             const ctx = canvas.getContext('2d')
             ctx.drawImage(img, 0, 0)
-            input.buffer = canvas.toBuffer('image/png')
+            input.value = canvas.toBuffer('image/png')
             delete input.value
 
             logger.info('Removed second layer for skin.')

@@ -1,10 +1,10 @@
 import Adapter from '../Adapter'
 
-import Resource from '../../utils/Resource'
 import Logger from '../../utils/Logger'
+import Resource from '../../utils/Resource'
 import ResourceFilter from '../../utils/ResourceFilter'
-import { Canvas, loadImage } from 'canvas'
 import { changeTextureNidInModel } from '../../utils/utils'
+import { Canvas, loadImage, Image } from 'canvas'
 
 export interface SplitAdapterParams {
     textureFilter: ResourceFilter,
@@ -13,21 +13,23 @@ export interface SplitAdapterParams {
     count: number
 }
 
-export default class SplitAdapter extends Adapter {
-    constructor(private readonly params: SplitAdapterParams) { super() }
+export default class SplitAdapter implements Adapter {
+    constructor(public readonly params: SplitAdapterParams) { }
 
     async execute(input: Resource, logger: Logger): Promise<Resource | Resource[]> {
         if (this.params.textureFilter.testLoc(input.loc)) {
-            const img = input.value =
-                input.value || await loadImage(input.buffer)
+            if (input.value instanceof Buffer) {
+                input.value = await loadImage(input.value)
+            }
+            const img: Image = input.value
             const ans: Resource[] = []
             const length = img.width
-            const canvas = new Canvas(length, length)
             for (let i = 0; i < this.params.count; i++) {
+                const canvas = new Canvas(length, length)
                 const ctx = canvas.getContext('2d')
                 ctx.drawImage(img, 0, i * length, length, length, 0, 0, length, length)
                 ans.push({
-                    buffer: canvas.toBuffer('image/png'),
+                    value: canvas.toBuffer('image/png'),
                     loc: {
                         type: input.loc.type,
                         ext: input.loc.ext,
@@ -35,11 +37,13 @@ export default class SplitAdapter extends Adapter {
                     }
                 })
             }
-            logger.info(`Splitted to ${this.params.count} textures.`)
+            logger.info(`Splitted to ${ans.length} textures.`)
             return ans
         } else if (this.params.modelFilter.testLoc(input.loc)) {
             const ans: Resource[] = []
-            input.value = input.value || JSON.parse(input.buffer.toString('utf8'))
+            if (input.value instanceof Buffer) {
+                input.value = JSON.parse(input.value.toString('utf8'))
+            }
             delete input.value.parent
             for (let i = 0; i < this.params.count; i++) {
                 const suffix = i < 10 ? `0${i}` : i
@@ -47,7 +51,6 @@ export default class SplitAdapter extends Adapter {
                 const modelNid = `${input.loc.nid}_${suffix}`
                 changeTextureNidInModel(input.value, this.params.textureFilter, textureNid, logger)
                 ans.push({
-                    buffer: input.buffer,
                     value: input.value,
                     loc: {
                         type: input.loc.type,
@@ -56,7 +59,7 @@ export default class SplitAdapter extends Adapter {
                     }
                 })
             }
-            logger.info(`Splitted to ${this.params.count} textures.`)
+            logger.info(`Splitted to ${ans.length} models.`)
             return ans
         } else {
             return input

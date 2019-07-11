@@ -10,22 +10,22 @@ export default class Logger {
      * Log an information.
      * @param msg The message.
      */
-    info(...msg: string[]): this;
+    info(...msg: any[]): this;
     /**
      * Log a warning.
      * @param msg The message.
      */
-    warn(...msg: string[]): this;
+    warn(...msg: any[]): this;
     /**
      * Log an error.
      * @param msg The message.
      */
-    error(...msg: string[]): this;
+    error(...msg: any[]): this;
     /**
      * Log a debugging message.
      * @param msg The message.
      */
-    dbug(...msg: string[]): this;
+    dbug(...msg: any[]): this;
     /**
      * Get all logs.
      */

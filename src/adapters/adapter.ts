@@ -5,9 +5,10 @@ import Logger from '../utils/Logger'
  * Represents an adapter. Adapters carry out operations for single file in the resource pack, 
  * e.g. renaming, scaling image, changing text content, etc.
  */
-export default abstract class Adapter {
+export default interface Adapter {
+    params: any
     /**
      * Adapts.
      */
-    abstract execute(input: Resource, logger: Logger): Promise<Resource | Resource[]>
+    execute(input: Resource, logger: Logger): Promise<Resource | Resource[]>
 }

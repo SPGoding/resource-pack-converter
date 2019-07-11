@@ -11,12 +11,14 @@ export interface PackMcmetaAdapterParams {
     changeFormatTo: number
 }
 
-export default class PackMcmetaAdapter extends Adapter {
-    constructor(private readonly params: PackMcmetaAdapterParams) { super() }
+export default class PackMcmetaAdapter implements Adapter {
+    constructor(public readonly params: PackMcmetaAdapterParams) { }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
         if (input.loc.type === '?' && input.loc.nid === 'pack.mcmeta') {
-            input.value = input.value || JSON.parse(input.buffer.toString('utf8'))
+            if (input.value instanceof Buffer) {
+                input.value = JSON.parse(input.value.toString('utf8'))
+            }
             const obj: PackMcmeta = input.value
             obj['$resource-pack-converter'] = {
                 info: 'This resource pack is converted by resource-pack-converter',

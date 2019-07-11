@@ -50,7 +50,9 @@ export default class ResourceFilter {
     }
 
     public getTargetNid(loc: Location, targetNidWithPlaceholders: string) {
-        loc.nid = standardizeNid(loc.nid)
+        if (loc.type !== '?') {
+            loc.nid = standardizeNid(loc.nid)
+        }
         if (loc.type === this.type && this.extensions.indexOf(loc.ext) !== -1) {
             if (this.nid instanceof Array) {
                 for (const i of this.nid) {
