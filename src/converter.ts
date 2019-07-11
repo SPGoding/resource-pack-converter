@@ -33,6 +33,7 @@ export async function convert(src: string, options: ConverterOptions) {
     const logger = new Logger()
 
     try {
+        const time1 = new Date().getTime()
         logger.info('Resouce Pack Converter made by @SPGoding <SPGoding@outlook.com>.')
         logger.dbug(`{inDir}  = '${inDir}'`, `{outDir} = '${outDir}'`)
 
@@ -40,17 +41,24 @@ export async function convert(src: string, options: ConverterOptions) {
         const whole = await getWhole(inDir, logger)
         await logger.dbug('Got the Whole.').indent(-1)
 
+        const time2 = new Date().getTime()
         logger.dbug('Initializing adapters...').indent()
         const adapters = await getAdapters(whole, options.conversion, logger)
         await logger.dbug(`Initialized ${adapters.length} adapter(s).`).indent(-1)
 
+        const time3 = new Date().getTime()
         logger.info('Starting conversion...').indent()
         await convertWhole(whole, adapters, logger)
         logger.info('Finished conversion.').indent(-1)
 
+        const time4 = new Date().getTime()
         logger.info('Saving the Whole...').indent()
         await saveWhole(whole, outDir, logger)
         logger.info('Saved the Whole.').indent(-1)
+
+        const time5 = new Date().getTime()
+        logger.info('Resource Pack Converter finished its job: ').indent()
+        statTime(logger, time2, time1, time3, time4, time5)
     } catch (ex) {
         logger.error(ex)
     } finally {
@@ -199,6 +207,24 @@ async function saveWhole(whole: Whole, outDir: string, logger: Logger) {
             }
         }
     }
+}
+
+function statTime(logger: Logger, time2: number, time1: number, time3: number, time4: number, time5: number) {
+    const g = time2 - time1
+    const i = time3 - time2
+    const c = time4 - time3
+    const s = time5 - time4
+    const t = time5 - time1
+
+    const digitToPercentage = (digit: number) =>
+        `${`${Math.round(digit * 100)}`.length < 2 ? `0${Math.round(digit * 100)}` : Math.round(digit * 100)}%`
+
+
+    logger.dbug(`G: ${digitToPercentage(g / t)} ${g}ms`)
+    logger.dbug(`I: ${digitToPercentage(i / t)} ${i}ms`)
+    logger.dbug(`C: ${digitToPercentage(c / t)} ${c}ms`)
+    logger.dbug(`S: ${digitToPercentage(s / t)} ${s}ms`)
+    logger.info(`T:     ${t}ms`)
 }
 
 export default convert
