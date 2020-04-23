@@ -1,19 +1,22 @@
 /**
  * A logger.
  */
-export class Logger {
+export default class Logger {
     private readonly _logs: string[] = []
 
     private _indent: number = 0
 
-    private _log(type: 'INFO' | 'WARN' | 'EROR' | 'PRVC', ...msg: string[]) {
+    private _log(type: 'INFO' | 'WARN' | 'EROR' | 'DBUG', ...msg: any[]) {
         const date = new Date()
         const fixTwoDigits = (number: number) => number < 10 ? `0${number}` : number.toString()
         const fixThreeDigits = (number: number) => number < 10 ? `00${number}` : number < 100 ? `0${number}` : number.toString()
         const time = `${fixTwoDigits(date.getHours())}:${fixTwoDigits(date.getMinutes())}:${fixTwoDigits(date.getSeconds())}:${fixThreeDigits(date.getMilliseconds())}`
         msg.forEach(v => {
+            if (typeof v !== 'string' && typeof v !== 'number') {
+                v = JSON.stringify(v)
+            }
             const m = `[${time}] [MAIN] [${type}] ${'  '.repeat(this._indent)}${v}`
-            console.log(m)
+            // console.log(m)
             this._logs.push(m)
         })
         return this
@@ -28,7 +31,7 @@ export class Logger {
      * Log an information.
      * @param msg The message.
      */
-    public info(...msg: string[]) {
+    public info(...msg: any[]) {
         return this._log('INFO', ...msg)
     }
 
@@ -36,7 +39,7 @@ export class Logger {
      * Log a warning.
      * @param msg The message.
      */
-    public warn(...msg: string[]) {
+    public warn(...msg: any[]) {
         return this._log('WARN', ...msg)
     }
 
@@ -44,16 +47,16 @@ export class Logger {
      * Log an error.
      * @param msg The message.
      */
-    public error(...msg: string[]) {
+    public error(...msg: any[]) {
         return this._log('EROR', ...msg)
     }
 
     /**
-     * Log a message which may leak user's privacy.
+     * Log a debugging message.
      * @param msg The message.
      */
-    public prvc(...msg: string[]) {
-        return this._log('PRVC', ...msg)
+    public dbug(...msg: any[]) {
+        return this._log('DBUG', ...msg)
     }
 
     /**
@@ -63,5 +66,3 @@ export class Logger {
         return this._logs.join('\n')
     }
 }
-
-export default Logger

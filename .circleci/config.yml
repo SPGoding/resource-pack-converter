@@ -3,7 +3,8 @@ version: 2
 jobs:
     test:
         docker:
-            - image: circleci/node:8
+            - image: circleci/node:10
+            - image: circleci/node:12
         steps:
             - checkout
             # Restore dependencies from cache
@@ -25,7 +26,8 @@ jobs:
                     command: npm test
     release:
         docker:
-            - image: circleci/node:8
+            - image: circleci/node:10
+            - image: circleci/node:12
         steps:
             - checkout
             # Restore dependencies from cache

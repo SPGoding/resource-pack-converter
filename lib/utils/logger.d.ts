@@ -1,7 +1,7 @@
 /**
  * A logger.
  */
-export declare class Logger {
+export default class Logger {
     private readonly _logs;
     private _indent;
     private _log;
@@ -10,25 +10,24 @@ export declare class Logger {
      * Log an information.
      * @param msg The message.
      */
-    info(...msg: string[]): this;
+    info(...msg: any[]): this;
     /**
      * Log a warning.
      * @param msg The message.
      */
-    warn(...msg: string[]): this;
+    warn(...msg: any[]): this;
     /**
      * Log an error.
      * @param msg The message.
      */
-    error(...msg: string[]): this;
+    error(...msg: any[]): this;
     /**
-     * Log a message which may leak user's privacy.
+     * Log a debugging message.
      * @param msg The message.
      */
-    prvc(...msg: string[]): this;
+    dbug(...msg: any[]): this;
     /**
      * Get all logs.
      */
     toString(): string;
 }
-export default Logger;

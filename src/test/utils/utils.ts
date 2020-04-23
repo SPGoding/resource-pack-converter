@@ -1,5 +1,5 @@
 import * as assert from 'power-assert'
-import { replaceWithRegExp, getRelativePath, getNamespacedID } from '../../utils/utils'
+import { replaceWithRegExp, getRelFromAbs, getNidFromRel } from '../../utils/utils'
 
 describe('utils.ts Tests', () => {
     describe('replaceWithRegExp() Tests', () => {
@@ -25,7 +25,7 @@ describe('utils.ts Tests', () => {
             const root = 'resourcepacks/foo'
             const dir = 'resourcepacks/foo/assets/pack.mcmeta'
 
-            const actual = getRelativePath(root, dir)
+            const actual = getRelFromAbs(root, dir)
 
             assert.strictEqual(actual, 'assets/pack.mcmeta')
         })
@@ -35,17 +35,17 @@ describe('utils.ts Tests', () => {
             const relPath = 'assets/minecraft/textures/item/diamond_sword.png'
             const ext = 'png'
 
-            const actual = getNamespacedID(relPath, ext)
+            const actual = getNidFromRel(relPath, ext)
 
-            assert.deepStrictEqual(actual, { namespacedID: 'minecraft:item/diamond_sword', type: 'textures' })
+            assert.deepStrictEqual(actual, { nid: 'minecraft:item/diamond_sword', type: 'textures' })
         })
         it('Should handle non-resource file', () => {
             const relPath = 'pack.mcmeta'
             const ext = 'png'
 
-            const actual = getNamespacedID(relPath, ext)
+            const actual = getNidFromRel(relPath, ext)
 
-            assert.deepStrictEqual(actual, { namespacedID: 'pack.mcmeta', type: '?' })
+            assert.deepStrictEqual(actual, { nid: 'pack.mcmeta', type: '?' })
         })
     })
 })

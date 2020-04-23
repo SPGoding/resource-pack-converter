@@ -1,6 +1,6 @@
 # Resource Pack Converter
 
-[![CircleCI](https://img.shields.io/circleci/build/gh/SPGoding/resource-pack-converter/dev.svg?logo=circleci&style=flat-square&token=bb6d895d4f5fe0183fd8220ce3d01e860ecf59bb)](https://circleci.com/gh/SPGoding/resource-pack-converter)
+[![CircleCI](https://img.shields.io/circleci/build/gh/SPGoding/resource-pack-converter.svg?logo=circleci&style=flat-square&token=bb6d895d4f5fe0183fd8220ce3d01e860ecf59bb)](https://circleci.com/gh/SPGoding/resource-pack-converter)
 [![npm](https://img.shields.io/npm/v/resource-pack-converter.svg?logo=npm&style=flat-square)](https://npmjs.com/package/resource-pack-converter)
 [![License](https://img.shields.io/github/license/SPGoding/resource-pack-converter.svg?style=flat-square)](https://github.com/SPGoding/resource-pack-converter/blob/master/LICENSE)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square)](https://github.com/semantic-release/semantic-release)
@@ -48,16 +48,20 @@ You can use it via the Command Line Tool or importing it to your project.
 - `src`: Source code written in TypeScript.
 - `lib`: Output JavaScript files.
 - `uti`: Some useful tools while coding.
-    - `analyzer.js`: An resource pack analyzer which can find the differences (e.g. file names) between 
-    two resource packs (only support folders) and generate conversion files. Use
-    ```Bash
-    npm run uti:analyzer ${fromDir} ${toDir} ${outDir}
-    ```
-    to analyze differences between `${fromDir}` and `${toDir}`. The result will be stored in `uti/analyzer/${outDir}`.
-    e.g. 
-    ```Bash
-    npm run uti:analyzer uti/input/1.6/ uti/input/1.7/ 1.6-1.7.json
-    ```
+    - `analyzer.js`: An resource pack analyzer which can find the differences (e.g. file names) between two resource packs (only support folders). 
+        - Use `npm run uti:analyzer ${fromDir} ${toDir} ${outDir}` to analyze differences between `${fromDir}`
+        and `${toDir}`.
+        - The result will be stored in `uti/analyzer/${outDir}`. 
+        - e.g. `npm run uti:analyzer uti/input/1.6/ uti/input/1.7/ 1.6-1.7.json`
+    - `comparer.html`: An HTML file which provides handy view to help you compare the differences between two resource pack manually.
+    - `sorter.js`: A script which will sort contents of the input JSON array.
+        - Use `npm run uti:sorter` to sort `uti/input/sorter.json`.
+        - The result will be stored in `uti/output/sorter.json`.
+        - e.g. `npm run uti:sorter`
+    - `whote-getter.js`: A script which will create a JSON file containing all blockstates and models of an resource pack.
+        - Use `npm run uti:whole-getter ${inDir} ${outDir}` to get the Whole of `${inDir}`.
+        - The result will be stored in `uti/whole-getter/${outDir}`.
+        - e.g. `npm run uti:whole-getter uti/input/1.8/ je1.8.json`
 
 ## How does it Work
 

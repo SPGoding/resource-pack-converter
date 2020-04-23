@@ -12,6 +12,8 @@
         "release": "semantic-release",
         "test": "mocha --require espower-typescript/guess --reporter dot \"./src/test/**/*.ts\"",
         "uti:analyzer": "node uti/analyzer",
+        "uti:sorter": "node uti/sorter",
+        "uti:whole-getter": "node uti/whole-getter",
         "watch": "tsc -w"
     },
     "bin": {
@@ -51,7 +53,7 @@
         "minecraft"
     ],
     "engines": {
-        "node": ">=8.0.0"
+        "node": ">=10.0.0"
     },
     "author": "SPGoding",
     "license": "MIT",

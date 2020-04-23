@@ -1,5 +1,5 @@
 import Adapter from '../adapter';
-import { Resource } from '../../utils/utils';
+import { Resource } from '../../utils/Resource';
 import Logger from '../../utils/logger';
 export default class ClockCompassAdapter implements Adapter {
     constructor();

@@ -1,25 +1,27 @@
-import Adapter from '../adapter'
+import Adapter from '../Adapter'
 
-import { Resource, replaceWithRegExp } from '../../utils/utils'
-import Logger from '../../utils/logger'
-import { Canvas, loadImage } from 'canvas'
+import { replaceWithRegExp } from '../../utils/utils'
+import Resource from '../../utils/Resource'
+import Logger from '../../utils/Logger'
+import { Canvas, loadImage, Image } from 'canvas'
+import ResourceFilter from '../../utils/ResourceFilter'
 
 export interface SkinAdapterParams {
     /**
-     * Specifies the files which this adapter should handle. Should be an Regular Expression.
+     * An resource filter.
      */
-    find: RegExp
+    filter: ResourceFilter
 }
 
 export default class SkinAdapter implements Adapter {
-    constructor(private readonly params: SkinAdapterParams) { }
+    constructor(public readonly params: SkinAdapterParams) { }
 
     async execute(input: Resource, logger: Logger): Promise<Resource> {
-        const regex = this.params.find
-        const path = replaceWithRegExp('$0', input.path, regex)
-
-        if (path) {
-            const img = await loadImage(input.content)
+        if (this.params.filter.testLoc(input.loc)) {
+            if (input.value instanceof Buffer) {
+                input.value = await loadImage(input.value)
+            }
+            const img: Image = input.value
             const length = img.width
             const canvas = new Canvas(length, length)
             const slength = length / 4
@@ -34,7 +36,8 @@ export default class SkinAdapter implements Adapter {
             ctx.drawImage(img, 0, 0)
             ctx.drawImage(img, sx1, sy1, slength, slength, x1, y, slength, slength)
             ctx.drawImage(img, sx2, sy2, slength, slength, x2, y, slength, slength)
-            input.content = canvas.toBuffer('image/png')
+            input.value = canvas.toBuffer('image/png')
+            delete input.value
 
             logger.info('Added second layer for skin.')
             return input
